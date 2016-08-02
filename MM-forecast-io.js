@@ -63,33 +63,6 @@ Module.register("MM-forecast-io", {
     this.updateDom(this.config.animationSpeed);
   },
 
-  renderWeather: function () {
-    var temp = Math.round(currentWeather.temperature);
-
-    var iconClass = iconTable[currentWeather.icon];
-    var icon = $('<span/>').addClass('icon dimmed wi').addClass(iconClass);
-    $('.temp').updateWithText(icon.outerHTML()+temp+'&deg;', 1000);
-
-    if (wind > 0) {
-      var bearingIcon = '';
-      var bearing = currentWeather.windBearing;
-      if (bearing !== undefined) {
-        bearing = (bearing + 22.5) % 360;
-        var bearingIndex = Math.floor(bearing / 45);
-        bearingIcon = $('<span/>').addClass('xdimmed wi').addClass(bearingIcons[bearingIndex]);
-      }
-
-      var windString = '<span class="wi wi-strong-wind xdimmed"></span> ' + wind + ' ' + bearingIcon.outerHTML();
-      $('.wind').updateWithText(windString, 1000);
-    } else {
-      $('.wind').updateWithText('', 1000);
-    }
-
-    // remove ending '.' for consistancy
-    var summary = minuteWeather.summary.replace(/\.$/, '');
-    $('.weather-summary').updateWithText(summary, 1000);
-  },
-
   getDom: function() {
     var wrapper = document.createElement("div");
 
@@ -111,20 +84,31 @@ Module.register("MM-forecast-io", {
       return wrapper;
     }
 
+    console.log(this.weatherData);
     var currentWeather = this.weatherData.currently;
+
+    var large = document.createElement("div");
+    large.className = "large light";
+
     var iconClass = this.config.iconTable[currentWeather.icon];
     var icon = document.createElement("span");
-
-    var temp = document.createElement("div");
-    var tempValue = Math.round(currentWeather.temperature);
     icon.className = 'wi weathericon ' + iconClass;
-    temp.appendChild(icon);
-    // temp.appendText(tempValue + '&deg;');
+    large.appendChild(icon);
 
-    wrapper.appendChild(temp);
+    var tempValue = Math.round(currentWeather.temperature);
+    var temperature = document.createElement("span");
+    temperature.className = "bright";
+    temperature.innerHTML = " " + tempValue + "&deg;";
+    large.appendChild(temperature);
 
-    // var summary  = document.createElement("div");
-    // var forecast = document.createElement("div");
+    // remove ending '.' for consistency
+    var summaryText = this.weatherData.minutely.summary.replace(/\.$/, '');
+    var summary = document.createElement("div");
+    summary.className = "small dimmed";
+    summary.innerHTML = summaryText;
+
+    wrapper.appendChild(large);
+    wrapper.appendChild(summary);
 
     return wrapper;
   },
