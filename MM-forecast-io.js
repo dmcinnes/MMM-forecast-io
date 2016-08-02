@@ -42,7 +42,7 @@ Module.register("MM-forecast-io", {
     if (localStorage.forecast) {
       this.loaded = true
       this.weatherData = JSON.parse(localStorage.forecast);
-      // this.updateDom(this.config.animationSpeed);
+      console.log(this.weatherData);
       return;
     }
 
@@ -61,6 +61,7 @@ Module.register("MM-forecast-io", {
     this.loaded = true;
     this.weatherData = data;
     this.updateDom(this.config.animationSpeed);
+    this.scheduleUpdate();
   },
 
   getDom: function() {
@@ -84,7 +85,6 @@ Module.register("MM-forecast-io", {
       return wrapper;
     }
 
-    console.log(this.weatherData);
     var currentWeather = this.weatherData.currently;
 
     var large = document.createElement("div");
