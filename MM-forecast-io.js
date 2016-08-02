@@ -53,7 +53,7 @@ Module.register("MM-forecast-io", {
     var self = this;
     var retry = true;
     var url = 'https://api.forecast.io/forecast/'+this.config.apikey+'/'+this.config.latitude+','+this.config.longitude;
-    jsonp(url, this.processWeather.bind(this));
+    getJSONP(url, this.processWeather.bind(this));
   },
 
   processWeather: function (data) {
