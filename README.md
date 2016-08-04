@@ -1,7 +1,7 @@
 # MM-Forecast-IO
-This an extension for the [MagicMirror](https://github.com/MichMich/MagicMirror) that adds localized weather using the [forecast.io API](https://developer.forecast.io/) -- the same service that powers the [Dark Sky App](https://darksky.net/app/).
+This an extension for [MagicMirror](https://github.com/MichMich/MagicMirror) that adds localized weather using the [forecast.io API](https://developer.forecast.io/) -- the same service that powers the [Dark Sky App](https://darksky.net/app/).
 
-This module makes use of the [geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/Using_geolocation) to determine the location of the mirror. This can be turned off by setting `latitude` and `longitude` in the module's config (see Configuration options below).
+This module makes use of the [geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/Using_geolocation) to determine the location of the mirror. This can be turned off by setting `latitude` and `longitude` in the module's config (see [Configuration options below](#configuration-options)).
 
 ## Using the module
 
@@ -39,8 +39,15 @@ modules: [
     <tr>
       <td><code>units</code></td>
       <td>What units to use. Specified by config.js<br>
-        <br><b>Possible values:</b> <code>config.units</code> = Specified by config.js, <code>metric</code> = Celsius, <code>imperial</code> = Fahrenheit.
+        <br><b>Possible values:</b> <code>config.units</code> = Specified by config.js, <code>default</code> = Kelvin, <code>metric</code> = Celsius, <code>imperial</code> =Fahrenheit
         <br><b>Default value:</b> <code>config.units</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>language</code></td>
+      <td>The language of the weather text.<br>
+        <br><b>Possible values:</b> <code>en</code>, <code>nl</code>, <code>ru</code>, etc ...
+        <br><b>Default value:</b> uses value of <i>config.language</i>
       </td>
     </tr>
     <tr>
@@ -74,14 +81,14 @@ modules: [
     </tr>
     <tr>
       <td><code>latitude</code></td>
-      <td>The latitude location in decimal. Set this (and longitude) as the location for the forecast. If this is not set, the module will attempt to approximate using browser geolocation.<br>
+      <td>The latitude location in decimal. Set this (and <code>longitude</code>) as the location for the forecast. If this is not set, the module will attempt to approximate using browser geolocation.<br>
         <br><b>Example value:</b> <code>16.77532</code>
         <br><b>Default value:</b>  <code>null</code>
       </td>
     </tr>
     <tr>
       <td><code>longitude</code></td>
-      <td>The longitude location in decimal. Set this (and latitude) as the location for the forecast. If this is not set, the module will attempt to approximate using browser geolocation.<br>
+      <td>The longitude location in decimal. Set this (and <code>latitude</code>) as the location for the forecast. If this is not set, the module will attempt to approximate using browser geolocation.<br>
         <br><b>Example value:</b> <code>-3.008265</code>
         <br><b>Default value:</b>  <code>null</code>
       </td>
@@ -95,7 +102,7 @@ modules: [
     <tr>
       <td><code>iconTable</code></td>
       <td>The conversion table to convert the weather conditions to weather-icons.<br>
-        <br><b>Default value:</b>  <code>iconTable: {
+        <br><b>Default value:</b><pre>iconTable: {
       'clear-day':           'wi-day-sunny',
       'clear-night':         'wi-night-clear',
       'rain':                'wi-rain',
@@ -109,7 +116,7 @@ modules: [
       'hail':                'wi-hail',
       'thunderstorm':        'wi-thunderstorm',
       'tornado':             'wi-tornado'
-    }</code>
+    }</pre>
       </td>
     </tr>
   </tbody>
