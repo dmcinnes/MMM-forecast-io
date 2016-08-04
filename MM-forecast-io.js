@@ -4,6 +4,7 @@ Module.register("MM-forecast-io", {
     apiKey: "",
     apiBase: "https://api.forecast.io/forecast",
     units: config.units,
+    lang: config.lang,
     updateInterval: 5 * 60 * 1000, // every 5 minutes
     animationSpeed: 1000,
     initialLoadDelay: 0, // 0 seconds delay
@@ -14,7 +15,11 @@ Module.register("MM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
-
+    unitTable: {
+      'default':  'auto',
+      'metric':   'si',
+      'imperial': 'us'
+    },
     iconTable: {
       'clear-day':           'wi-day-sunny',
       'clear-night':         'wi-night-clear',
@@ -68,7 +73,9 @@ Module.register("MM-forecast-io", {
       return;
     }
 
-    var url = this.config.apiBase+'/'+this.config.apiKey+'/'+this.config.latitude+','+this.config.longitude;
+    var units = this.config.unitTable[this.config.units] || 'auto';
+
+    var url = this.config.apiBase+'/'+this.config.apiKey+'/'+this.config.latitude+','+this.config.longitude+'?units='+units;
     getJSONP(url, this.processWeather.bind(this));
   },
 
@@ -78,11 +85,7 @@ Module.register("MM-forecast-io", {
     }
     this.loaded = true;
     this.weatherData = data;
-    this.temp = this.weatherData.currently.temperature;
-    if (this.config.units == 'metric') {
-      this.temp = (this.temp - 32) / 1.8;
-    }
-    this.temp = Math.round(this.temp);
+    this.temp = Math.round(this.weatherData.currently.temperature);
     this.updateDom(this.config.animationSpeed);
     this.scheduleUpdate();
   },
@@ -90,8 +93,8 @@ Module.register("MM-forecast-io", {
   getDom: function() {
     var wrapper = document.createElement("div");
 
-    if (this.config.apikey === "") {
-      wrapper.innerHTML = "Please set the correct forcast.io <i>apikey</i> in the config for module: " + this.name + ".";
+    if (this.config.apiKey === "") {
+      wrapper.innerHTML = "Please set the correct forcast.io <i>apiKey</i> in the config for module: " + this.name + ".";
       wrapper.className = "dimmed light small";
       return wrapper;
     }
