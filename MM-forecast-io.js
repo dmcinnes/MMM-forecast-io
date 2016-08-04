@@ -7,11 +7,12 @@ Module.register("MM-forecast-io", {
     animationSpeed: 1000,
     initialLoadDelay: 0, // 0 seconds delay
     retryDelay: 2500,
-    geoLocation: true,
     geoLocationOptions: {
       enableHighAccuracy: true,
       timeout: 5000
     },
+    latitude: null,
+    longitude: null,
 
     iconTable: {
       'clear-day':           'wi-day-sunny',
@@ -31,32 +32,36 @@ Module.register("MM-forecast-io", {
     debug: false
   },
 
-  getTranslations: function() {
+  getTranslations: function () {
     return false;
   },
 
-  getScripts: function() {
+  getScripts: function () {
     return ['jsonp.js'];
   },
 
-  getStyles: function() {
+  getStyles: function () {
     return ["weather-icons.css", "MM-forecast-io.css"];
   },
 
-  start: function() {
+  shouldLookupGeolocation: function () {
+    return this.config.latitude == null && this.config.longitude == null;
+  },
+
+  start: function () {
     Log.info("Starting module: " + this.name);
 
-    if (this.config.geoLocation) {
+    if (this.shouldLookupGeolocation()) {
       this.getLocation();
     }
     this.scheduleUpdate(this.config.initialLoadDelay);
   },
 
-  updateWeather: function() {
+  updateWeather: function () {
     if (this.geoLocationLookupFailed) {
       return;
     }
-    if (this.config.geoLocation && !this.geoLocationLookupSuccess) {
+    if (this.shouldLookupGeolocation() && !this.geoLocationLookupSuccess) {
       this.scheduleUpdate(1000); // try again in one second
       return;
     }
@@ -92,13 +97,7 @@ Module.register("MM-forecast-io", {
     }
 
     if (this.geoLocationLookupFailed) {
-      wrapper.innerHTML = "Geolocaiton lookup failed, please set <i>geoLocation</i> to <b>false</b> in the config for module: " + this.name + ".";
-      wrapper.className = "dimmed light small";
-      return wrapper;
-    }
-
-    if (!this.config.geoLocation && this.config.latitude === null || this.config.longitude === null) {
-      wrapper.innerHTML = "Please set the forcast.io <i>latitude</i> and <i>longitude</i> in the config for module: " + this.name + ".";
+      wrapper.innerHTML = "Geolocaiton lookup failed, please set i>latitude</i> and <i>longitude</i> in the config for module: " + this.name + ".";
       wrapper.className = "dimmed light small";
       return wrapper;
     }
