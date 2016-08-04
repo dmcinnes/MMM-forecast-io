@@ -2,7 +2,8 @@ Module.register("MM-forecast-io", {
 
   defaults: {
     apikey: "",
-    updateInterval: 10 * 60 * 1000, // every 10 minutes
+    units: config.units,
+    updateInterval: 5 * 60 * 1000, // every 5 minutes
     animationSpeed: 1000,
     initialLoadDelay: 0, // 0 seconds delay
     retryDelay: 2500,
@@ -72,6 +73,11 @@ Module.register("MM-forecast-io", {
     }
     this.loaded = true;
     this.weatherData = data;
+    this.temp = this.weatherData.currently.temperature;
+    if (this.config.units == 'metric') {
+      this.temp = (this.temp - 32) / 1.8;
+    }
+    this.temp = Math.round(this.temp);
     this.updateDom(this.config.animationSpeed);
     this.scheduleUpdate();
   },
@@ -114,10 +120,9 @@ Module.register("MM-forecast-io", {
     icon.className = 'wi weathericon ' + iconClass;
     large.appendChild(icon);
 
-    var tempValue = Math.round(currentWeather.temperature);
     var temperature = document.createElement("span");
     temperature.className = "bright";
-    temperature.innerHTML = " " + tempValue + "&deg;";
+    temperature.innerHTML = " " + this.temp + "&deg;";
     large.appendChild(temperature);
 
     // remove ending '.' for consistency with the interface
