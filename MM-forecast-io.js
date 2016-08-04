@@ -1,7 +1,8 @@
 Module.register("MM-forecast-io", {
 
   defaults: {
-    apikey: "",
+    apiKey: "",
+    apiBase: "https://api.forecast.io/forecast",
     units: config.units,
     updateInterval: 5 * 60 * 1000, // every 5 minutes
     animationSpeed: 1000,
@@ -68,7 +69,7 @@ Module.register("MM-forecast-io", {
 
     var self = this;
     var retry = true;
-    var url = 'https://api.forecast.io/forecast/'+this.config.apikey+'/'+this.config.latitude+','+this.config.longitude;
+    var url = this.config.apiBase+'/'+this.config.apiKey+'/'+this.config.latitude+','+this.config.longitude;
     getJSONP(url, this.processWeather.bind(this));
   },
 
