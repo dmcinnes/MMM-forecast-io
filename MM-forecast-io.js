@@ -101,11 +101,12 @@ Module.register("MM-forecast-io", {
     }
 
     var currentWeather = this.weatherData.currently;
+    var minutely       = this.weatherData.minutely;
 
     var large = document.createElement("div");
     large.className = "large light";
 
-    var iconClass = this.config.iconTable[currentWeather.icon];
+    var iconClass = this.config.iconTable[minutely.icon];
     var icon = document.createElement("span");
     icon.className = 'wi weathericon ' + iconClass;
     large.appendChild(icon);
@@ -116,8 +117,8 @@ Module.register("MM-forecast-io", {
     temperature.innerHTML = " " + tempValue + "&deg;";
     large.appendChild(temperature);
 
-    // remove ending '.' for consistency
-    var summaryText = this.weatherData.minutely.summary.replace(/\.$/, '');
+    // remove ending '.' for consistency with the interface
+    var summaryText = minutely.summary.replace(/\.$/, '');
     var summary = document.createElement("div");
     summary.className = "small dimmed";
     summary.innerHTML = summaryText;
