@@ -12,7 +12,7 @@ Module.register("MM-forecast-io", {
       enableHighAccuracy: true,
       timeout: 5000
     },
-    latitude: null,
+    latitude:  null,
     longitude: null,
 
     iconTable: {
@@ -46,7 +46,8 @@ Module.register("MM-forecast-io", {
   },
 
   shouldLookupGeolocation: function () {
-    return this.config.latitude == null && this.config.longitude == null;
+    return this.config.latitude == null &&
+           this.config.longitude == null;
   },
 
   start: function () {
@@ -67,8 +68,6 @@ Module.register("MM-forecast-io", {
       return;
     }
 
-    var self = this;
-    var retry = true;
     var url = this.config.apiBase+'/'+this.config.apiKey+'/'+this.config.latitude+','+this.config.longitude;
     getJSONP(url, this.processWeather.bind(this));
   },
@@ -98,7 +97,7 @@ Module.register("MM-forecast-io", {
     }
 
     if (this.geoLocationLookupFailed) {
-      wrapper.innerHTML = "Geolocaiton lookup failed, please set i>latitude</i> and <i>longitude</i> in the config for module: " + this.name + ".";
+      wrapper.innerHTML = "Geolocaiton lookup failed, please set <i>latitude</i> and <i>longitude</i> in the config for module: " + this.name + ".";
       wrapper.className = "dimmed light small";
       return wrapper;
     }
