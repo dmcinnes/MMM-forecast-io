@@ -6,6 +6,11 @@ Module.register("MM-forecast-io", {
     animationSpeed: 1000,
     initialLoadDelay: 0, // 0 seconds delay
     retryDelay: 2500,
+    geoLocation: true,
+    geoLocationOptions: {
+      enableHighAccuracy: true,
+      timeout: 5000
+    },
 
     iconTable: {
       'clear-day':           'wi-day-sunny',
@@ -39,17 +44,21 @@ Module.register("MM-forecast-io", {
   start: function() {
     Log.info("Starting module: " + this.name);
 
-    if (localStorage.forecast) {
-      this.loaded = true
-      this.weatherData = JSON.parse(localStorage.forecast);
-      console.log(this.weatherData);
-      return;
+    if (this.config.geoLocation) {
+      this.getLocation();
     }
-
     this.scheduleUpdate(this.config.initialLoadDelay);
   },
 
   updateWeather: function() {
+    if (this.geoLocationLookupFailed) {
+      return;
+    }
+    if (this.config.geoLocation && !this.geoLocationLookupSuccess) {
+      this.scheduleUpdate(1000); // try again in one second
+      return;
+    }
+
     var self = this;
     var retry = true;
     var url = 'https://api.forecast.io/forecast/'+this.config.apikey+'/'+this.config.latitude+','+this.config.longitude;
@@ -73,7 +82,13 @@ Module.register("MM-forecast-io", {
       return wrapper;
     }
 
-    if (this.config.latitude === "" || this.config.longitude === "") {
+    if (this.geoLocationLookupFailed) {
+      wrapper.innerHTML = "Geolocaiton lookup failed, please set <i>geoLocation</i> to <b>false</b> in the config for module: " + this.name + ".";
+      wrapper.className = "dimmed light small";
+      return wrapper;
+    }
+
+    if (!this.config.geoLocation && this.config.latitude === null || this.config.longitude === null) {
       wrapper.innerHTML = "Please set the forcast.io <i>latitude</i> and <i>longitude</i> in the config for module: " + this.name + ".";
       wrapper.className = "dimmed light small";
       return wrapper;
@@ -111,6 +126,21 @@ Module.register("MM-forecast-io", {
     wrapper.appendChild(summary);
 
     return wrapper;
+  },
+
+  getLocation: function () {
+    var self = this;
+    navigator.geolocation.getCurrentPosition(
+      function (location) {
+        self.config.latitude  = location.coords.latitude;
+        self.config.longitude = location.coords.longitude;
+        self.geoLocationLookupSuccess = true;
+      },
+      function (error) {
+        self.geoLocationLookupFailed = true;
+        self.updateDom(self.config.animationSpeed);
+      },
+      this.config.geoLocationOptions);
   },
 
   scheduleUpdate: function(delay) {
