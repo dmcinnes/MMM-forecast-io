@@ -26,7 +26,8 @@ Module.register("MM-forecast-io", {
       'hail':                'wi-hail',
       'thunderstorm':        'wi-thunderstorm',
       'tornado':             'wi-tornado'
-    }
+    },
+    debug: false
   },
 
   getTranslations: function() {
@@ -66,7 +67,9 @@ Module.register("MM-forecast-io", {
   },
 
   processWeather: function (data) {
-    console.log('process', data);
+    if (this.config.debug) {
+      console.log('weather data', data);
+    }
     this.loaded = true;
     this.weatherData = data;
     this.updateDom(this.config.animationSpeed);
@@ -133,11 +136,17 @@ Module.register("MM-forecast-io", {
     var self = this;
     navigator.geolocation.getCurrentPosition(
       function (location) {
+        if (self.config.debug) {
+          console.log("geolocation success", location);
+        }
         self.config.latitude  = location.coords.latitude;
         self.config.longitude = location.coords.longitude;
         self.geoLocationLookupSuccess = true;
       },
       function (error) {
+        if (self.config.debug) {
+          console.log("geolocation error", error);
+        }
         self.geoLocationLookupFailed = true;
         self.updateDom(self.config.animationSpeed);
       },
