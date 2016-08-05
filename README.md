@@ -11,11 +11,14 @@ To use this module, add it to the modules array in the `config/config.js` file:
 ````javascript
 modules: [
   {
-    module: 'mm-forecast-io',
+    module: 'MM-forecast-io',
     position: 'top_right',  // This can be any of the regions.
     config: {
       // See 'Configuration options' for more information.
-      apikey: 'abcde12345abcde12345abcde12345ab' // forecast.io API key.
+      apiKey: 'abcde12345abcde12345abcde12345ab' // forecast.io API key.
+      // Only required if geolocation doesn't work:
+      latitude:   16.77532,
+      longitude: -3.008265
     }
   }
 ]
@@ -33,7 +36,7 @@ modules: [
   <thead>
   <tbody>
     <tr>
-      <td><code>apikey</code></td>
+      <td><code>apiKey</code></td>
       <td>The <a href="https://developer.forecast.io/" target="_blank">Forecast.io</a> API key, which can be obtained by creating an Forecast.io account.<br>
         <br> This value is <b>REQUIRED</b>
       </td>
