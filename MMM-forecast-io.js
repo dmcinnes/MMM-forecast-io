@@ -1,4 +1,4 @@
-Module.register("MM-forecast-io", {
+Module.register("MMM-forecast-io", {
 
   defaults: {
     apiKey: "",
@@ -47,7 +47,7 @@ Module.register("MM-forecast-io", {
   },
 
   getStyles: function () {
-    return ["weather-icons.css", "MM-forecast-io.css"];
+    return ["weather-icons.css", "MMM-forecast-io.css"];
   },
 
   shouldLookupGeolocation: function () {
