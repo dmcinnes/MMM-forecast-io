@@ -6,3 +6,32 @@
   -webkit-transform: translate(0, -3px); /* Safari */
   transform: translate(0, -3px);
 }
+
+/* Week graph */
+.MMM-forecast-io .weekgraph {
+  width:  200px;
+  height: 200px;
+  float:  block;
+}
+
+.MMM-forecast-io .weekgraphDayText {
+  font-family: HelveticaNeue-Light;
+  font-size:   18px;
+  fill:        white;
+}
+
+.MMM-forecast-io .weekgraphDayIcon {
+  font-size:   18px;
+  fill:        white;
+  text-anchor: end;
+}
+
+.MMM-forecast-io .weekgraphDayTempBar {
+  fill:        #DDD;
+  stroke:      none;
+}
+
+.MMM-forecast-io .weekgraphTempText {
+  font-size:   10px;
+  fill:        white;
+}
