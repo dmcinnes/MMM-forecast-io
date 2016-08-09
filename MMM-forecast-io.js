@@ -9,6 +9,7 @@ Module.register("MMM-forecast-io", {
     animationSpeed: 1000,
     initialLoadDelay: 0, // 0 seconds delay
     retryDelay: 2500,
+    tempDecimalPlaces: 0, // round temperatures to this many decimal places
     geoLocationOptions: {
       enableHighAccuracy: true,
       timeout: 5000
@@ -85,7 +86,12 @@ Module.register("MMM-forecast-io", {
     }
     this.loaded = true;
     this.weatherData = data;
-    this.temp = Math.round(this.weatherData.currently.temperature);
+    var temp = this.weatherData.currently.temperature;
+    var scalar = 1 << this.config.tempDecimalPlaces;
+    temp *= scalar;
+    temp  = Math.round(temp);
+    temp /= scalar;
+    this.temp = temp;
     this.updateDom(this.config.animationSpeed);
     this.scheduleUpdate();
   },
