@@ -35,3 +35,31 @@
   font-size:   10px;
   fill:        white;
 }
+
+.forecast {
+  width: 100%;
+}
+
+.forecast-row {
+  display: block;
+  height: 2.0ex;
+  width: 100%;
+  color: white;
+  margin: 1ex 0ex;
+}
+
+.forecast-row .temp {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 5px 0px;
+}
+
+.forecast-row .bar {
+  display: inline-block;
+  background-color: white;
+  height: 2.0ex;
+  border-radius: 1ex;
+  width: calc(100% - 2.2em);
+  vertical-align: middle;
+  margin: 0px 2px;
+}

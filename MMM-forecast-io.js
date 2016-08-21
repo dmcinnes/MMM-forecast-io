@@ -164,6 +164,30 @@ Module.register("MMM-forecast-io", {
     return wrapper;
   },
 
+  renderForecastRow: function (data, min, max) {
+    var row = document.createElement("div");
+    var total = max - min;
+    var rowMin = Math.round(data.temperatureMin);
+    var rowMax = Math.round(data.temperatureMax);
+    var percentLeft  = Math.round(100 * ((rowMin - min) / total));
+    var percentRight = Math.round(100 * ((max - rowMax) / total));
+    row.style["margin-left"]  = percentLeft + "%";
+    row.style["margin-right"] = percentRight + "%";
+    row.className = "forecast-row";
+    var minTempText = document.createElement("div");
+    minTempText.className = "temp min-temp";
+    minTempText.innerHTML = rowMin;
+    var maxTempText = document.createElement("div");
+    maxTempText.className = "temp max-temp";
+    maxTempText.innerHTML = rowMax;
+    var bar = document.createElement("div");
+    bar.className = "bar";
+    row.appendChild(minTempText);
+    row.appendChild(bar);
+    row.appendChild(maxTempText);
+    return row;
+  },
+
   // Draw the weekly forecast as a graph, similar to how Dark Sky does.  Each day is drawn as a bar
   // prepresenting the low and high temperature.
   renderWeatherForecast: function () {
@@ -185,8 +209,29 @@ Module.register("MMM-forecast-io", {
     var opacityShift  =  0.12
     var self          = this;
 
+    var i;
+
     var filteredDays =
       this.weatherData.daily.data.filter( function(d, i) { return (i < numDays); });
+
+    var min = Number.MAX_VALUE;
+    var max = -Number.MAX_VALUE;
+    for (i = 0; i < filteredDays.length; i++) {
+      var day = filteredDays[i];
+      min = Math.min(min, day.temperatureMin);
+      max = Math.max(max, day.temperatureMax);
+    }
+    min = Math.round(min);
+    max = Math.round(max);
+
+    var display = document.createElement("div");
+    display.className = "forecast small";
+    for (i = 0; i < filteredDays.length; i++) {
+      var day = filteredDays[i];
+      var row = this.renderForecastRow(day, min, max)
+      display.appendChild(row);
+    }
+    return display;
 
     // Set up the SVG
     var weekGraphSVG = document.createElement("svg");
