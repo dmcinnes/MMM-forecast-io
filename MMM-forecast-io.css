@@ -37,13 +37,12 @@
 }
 
 .forecast {
-  width: 100%;
+  text-align: left;
 }
 
 .forecast-row {
   display: block;
   height: 2.0ex;
-  width: 100%;
   color: white;
   margin: 1ex 0ex;
 }
@@ -54,12 +53,15 @@
   padding: 5px 0px;
 }
 
+.forecast-row .temp.min-temp {
+  text-align: right;
+}
+
 .forecast-row .bar {
   display: inline-block;
   background-color: white;
   height: 2.0ex;
   border-radius: 1ex;
-  width: calc(100% - 2.2em);
   vertical-align: middle;
   margin: 0px 2px;
 }

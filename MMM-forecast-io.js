@@ -16,6 +16,7 @@ Module.register("MMM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
+    width: 440,
     unitTable: {
       'default':  'auto',
       'metric':   'si',
@@ -35,24 +36,6 @@ Module.register("MMM-forecast-io", {
       'hail':                'wi-hail',
       'thunderstorm':        'wi-thunderstorm',
       'tornado':             'wi-tornado'
-    },
-    //   We can't use the convenient CSS from weather-icons.css because
-    //   Javascript can't read that, and :before isn't available without
-    //   evaluating the element, so we just build our own table and look into that.
-    svgIconTable: {
-      "clear-day"           : "\uf00d",
-      "clear-night"         : "\uf02e",
-      "rain"                : "\uf019",
-      "snow"                : "\uf01b",
-      "sleet"               : "\uf0b5",
-      "wind"                : "\uf050",
-      "partly-cloudy-day"   : "\uf002",
-      "fog"                 : "\uf014",
-      "cloudy"              : "\uf013",
-      "partly-cloudy-night" : "\uf031",
-      "hail"                : "\uf015",
-      "thunderstorm"        : "\uf01e",
-      "tornado"             : "\uf056"
     },
 
     debug: false
@@ -99,7 +82,12 @@ Module.register("MMM-forecast-io", {
     var units = this.config.unitTable[this.config.units] || 'auto';
 
     var url = this.config.apiBase+'/'+this.config.apiKey+'/'+this.config.latitude+','+this.config.longitude+'?units='+units+'&lang='+this.config.language;
-    getJSONP(url, this.processWeather.bind(this));
+    if (this.config.data) {
+      // for debugging
+      this.processWeather(this.config.data);
+    } else {
+      getJSONP(url, this.processWeather.bind(this));
+    }
   },
 
   processWeather: function (data) {
@@ -111,6 +99,13 @@ Module.register("MMM-forecast-io", {
     this.temp = this.roundTemp(this.weatherData.currently.temperature);
     this.updateDom(this.config.animationSpeed);
     this.scheduleUpdate();
+  },
+
+  notificationReceived: function(notification, payload, sender) {
+    switch(notification) {
+      case "DOM_OBJECTS_CREATED":
+        break;
+    }
   },
 
   getDom: function() {
@@ -165,23 +160,29 @@ Module.register("MMM-forecast-io", {
   },
 
   renderForecastRow: function (data, min, max) {
+    var width = this.config.width - 20;
     var row = document.createElement("div");
+    row.style.width = width;
     var total = max - min;
     var rowMin = Math.round(data.temperatureMin);
     var rowMax = Math.round(data.temperatureMax);
     var percentLeft  = Math.round(100 * ((rowMin - min) / total));
     var percentRight = Math.round(100 * ((max - rowMax) / total));
     row.style["margin-left"]  = percentLeft + "%";
-    row.style["margin-right"] = percentRight + "%";
     row.className = "forecast-row";
     var minTempText = document.createElement("div");
     minTempText.className = "temp min-temp";
     minTempText.innerHTML = rowMin;
+    minTempText.style.width = "40px";
     var maxTempText = document.createElement("div");
     maxTempText.className = "temp max-temp";
     maxTempText.innerHTML = rowMax;
+    maxTempText.style.width = "40px";
     var bar = document.createElement("div");
     bar.className = "bar";
+    var barWidth = width - 100;
+    barWidth = Math.round(barWidth * ((rowMax - rowMin) / total));
+    bar.style.width = barWidth + 'px';
     row.appendChild(minTempText);
     row.appendChild(bar);
     row.appendChild(maxTempText);
@@ -423,6 +424,6 @@ Module.register("MMM-forecast-io", {
     setTimeout(function() {
       self.updateWeather();
     }, nextLoad);
-  },
+  }
 
 });
