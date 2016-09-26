@@ -172,11 +172,11 @@ Module.register("MMM-forecast-io", {
     row.className = "forecast-row";
     var minTempText = document.createElement("div");
     minTempText.className = "temp min-temp";
-    minTempText.innerHTML = rowMin;
+    minTempText.innerHTML = this.roundTemp(rowMin) + "\u00B0";
     minTempText.style.width = "40px";
     var maxTempText = document.createElement("div");
     maxTempText.className = "temp max-temp";
-    maxTempText.innerHTML = rowMax;
+    maxTempText.innerHTML = this.roundTemp(rowMax) + "\u00B0";
     maxTempText.style.width = "40px";
     var bar = document.createElement("div");
     bar.className = "bar";
