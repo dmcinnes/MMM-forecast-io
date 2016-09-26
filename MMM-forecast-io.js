@@ -48,8 +48,8 @@ Module.register("MMM-forecast-io", {
 
   getScripts: function () {
     return [
-      'd3.min.js',
-      'jsonp.js'
+      'jsonp.js',
+      'moment.js'
     ];
   },
 
@@ -184,30 +184,49 @@ Module.register("MMM-forecast-io", {
 
   renderForecastRow: function (data, min, max) {
     var width = this.config.forecastWidth;
-    var row = document.createElement("div");
     var total = max - min;
     var rowMin = Math.round(data.temperatureMin);
     var rowMax = Math.round(data.temperatureMax);
     var percentLeft  = Math.round(100 * ((rowMin - min) / total));
-    row.style["margin-left"]  = percentLeft + "%";
+
+    var row = document.createElement("div");
     row.className = "forecast-row";
+
+    var dt = new Date(data.time * 1000);
+    var day = moment.weekdaysShort(dt.getDay());
+    var dayDiv = document.createElement("div");
+    var dayTextSpan = document.createElement("span");
+    dayTextSpan.innerHTML = day;
+    var iconClass = this.config.iconTable[data.icon];
+    var icon = document.createElement("span");
+    icon.className = 'wi weathericon ' + iconClass;
+    dayDiv.appendChild(dayTextSpan);
+    dayDiv.appendChild(icon);
+    dayDivWidth = this.getTextWidth(dayDiv.innerHTML);
+    dayDiv.style.width = dayDivWidth;
+
     var minTempTextDiv = document.createElement("div");
     var minTempText = this.roundTemp(rowMin) + "\u00B0";
     var minTempTextWidth = this.getTextWidth(minTempText);
     minTempTextDiv.innerHTML = minTempText;
     minTempTextDiv.style.width = minTempTextWidth + "px";
     minTempTextDiv.className = "temp min-temp";
+    minTempTextDiv.style["margin-left"]  = percentLeft + "%";
+
     var maxTempTextDiv = document.createElement("div");
     var maxTempText = this.roundTemp(rowMax) + "\u00B0";
     var maxTempTextWidth = this.getTextWidth(maxTempText);
     maxTempTextDiv.innerHTML = maxTempText;
     maxTempTextDiv.style.width = maxTempTextWidth + "px";
     maxTempTextDiv.className = "temp max-temp";
+
     var bar = document.createElement("div");
     bar.className = "bar";
-    var barWidth = width - minTempTextWidth - maxTempTextWidth;
+    var barWidth = width - minTempTextWidth - maxTempTextWidth - dayDivWidth;
     barWidth = Math.round(barWidth * ((rowMax - rowMin) / total));
     bar.style.width = barWidth + 'px';
+
+    row.appendChild(dayDiv);
     row.appendChild(minTempTextDiv);
     row.appendChild(bar);
     row.appendChild(maxTempTextDiv);
