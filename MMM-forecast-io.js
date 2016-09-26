@@ -17,6 +17,7 @@ Module.register("MMM-forecast-io", {
     latitude:  null,
     longitude: null,
     width: 440,
+    testElementID: "forecast-io-test-element",
     unitTable: {
       'default':  'auto',
       'metric':   'si',
@@ -126,6 +127,8 @@ Module.register("MMM-forecast-io", {
     if (!this.loaded) {
       wrapper.innerHTML = this.translate('LOADING');
       wrapper.className = "dimmed light small";
+      // need this for the initial load
+      wrapper.appendChild(this.createTextWidthTestElement());
       return wrapper;
     }
 
@@ -156,7 +159,27 @@ Module.register("MMM-forecast-io", {
 
     wrapper.appendChild(this.renderWeatherForecast());
 
+    // need this for subsequent loads
+    wrapper.appendChild(this.createTextWidthTestElement());
+
     return wrapper;
+  },
+
+  createTextWidthTestElement: function () {
+    var element = document.createElement("div");
+    element.id = this.config.testElementID;
+    element.style.position = 'absolute';
+    element.style.visibility = 'hidden';
+    element.style.height = 'auto';
+    element.style.width = 'auto';
+    element.style['white-space'] = 'nowrap';
+    return element;
+  },
+
+  getTextWidth: function (text) {
+    var element = document.getElementById(this.config.testElementID);
+    element.innerHTML = text;
+    return element.clientWidth + 1;
   },
 
   renderForecastRow: function (data, min, max) {
@@ -170,22 +193,24 @@ Module.register("MMM-forecast-io", {
     var percentRight = Math.round(100 * ((max - rowMax) / total));
     row.style["margin-left"]  = percentLeft + "%";
     row.className = "forecast-row";
-    var minTempText = document.createElement("div");
-    minTempText.className = "temp min-temp";
-    minTempText.innerHTML = this.roundTemp(rowMin) + "\u00B0";
-    minTempText.style.width = "40px";
-    var maxTempText = document.createElement("div");
-    maxTempText.className = "temp max-temp";
-    maxTempText.innerHTML = this.roundTemp(rowMax) + "\u00B0";
-    maxTempText.style.width = "40px";
+    var minTempTextDiv = document.createElement("div");
+    var minTempText = this.roundTemp(rowMin) + "\u00B0";
+    minTempTextDiv.innerHTML = minTempText;
+    minTempTextDiv.style.width = this.getTextWidth(minTempText) + "px";
+    minTempTextDiv.className = "temp min-temp";
+    var maxTempTextDiv = document.createElement("div");
+    var maxTempText = this.roundTemp(rowMax) + "\u00B0";
+    maxTempTextDiv.innerHTML = maxTempText;
+    maxTempTextDiv.style.width = this.getTextWidth(maxTempText) + "px";
+    maxTempTextDiv.className = "temp max-temp";
     var bar = document.createElement("div");
     bar.className = "bar";
     var barWidth = width - 100;
     barWidth = Math.round(barWidth * ((rowMax - rowMin) / total));
     bar.style.width = barWidth + 'px';
-    row.appendChild(minTempText);
+    row.appendChild(minTempTextDiv);
     row.appendChild(bar);
-    row.appendChild(maxTempText);
+    row.appendChild(maxTempTextDiv);
     return row;
   },
 
@@ -226,7 +251,7 @@ Module.register("MMM-forecast-io", {
     max = Math.round(max);
 
     var display = document.createElement("div");
-    display.className = "forecast small";
+    display.className = "forecast";
     for (i = 0; i < filteredDays.length; i++) {
       var day = filteredDays[i];
       var row = this.renderForecastRow(day, min, max)
