@@ -1,4 +1,4 @@
-.MMM-forecast-io .weathericon {
+.MMM-forecast-io .big-icon {
   font-size: 75%;
   line-height: 65px;
   display: inline-block;
@@ -38,6 +38,7 @@
 
 .forecast {
   text-align: left;
+  overflow: hidden;
 }
 
 .forecast-row {
@@ -64,4 +65,19 @@
   border-radius: 1ex;
   vertical-align: middle;
   margin: 0px 2px;
+}
+
+.forecast-day {
+  position: relative;
+  display: inline-block;
+  margin-right: 0.5em;
+}
+.forecast-day .forecast-day-text {
+  display: inline-block;
+}
+.forecast-day .weathericon {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  text-align: center;
 }

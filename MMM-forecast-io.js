@@ -16,7 +16,7 @@ Module.register("MMM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
-    forecastWidth: 410,
+    forecastWidth: 350,
     testElementID: "forecast-io-test-element",
     unitTable: {
       'default':  'auto',
@@ -140,7 +140,7 @@ Module.register("MMM-forecast-io", {
 
     var iconClass = this.config.iconTable[minutely.icon];
     var icon = document.createElement("span");
-    icon.className = 'wi weathericon ' + iconClass;
+    icon.className = 'big-icon wi weathericon ' + iconClass;
     large.appendChild(icon);
 
     var temperature = document.createElement("span");
@@ -176,13 +176,34 @@ Module.register("MMM-forecast-io", {
     return element;
   },
 
-  getTextWidth: function (text) {
+  getTextWidth: function (text, classes) {
     var element = document.getElementById(this.config.testElementID);
+    element.className = classes || "";
     element.innerHTML = text;
     return element.clientWidth + 1;
   },
 
-  renderForecastRow: function (data, min, max) {
+  getDayFromTime: function (time) {
+    var dt = new Date(time * 1000);
+    return moment.weekdaysShort(dt.getDay());
+  },
+
+  renderForcastDayAndIcon: function (data) {
+    var day = this.getDayFromTime(data.time);
+    var dayDiv = document.createElement("div");
+    dayDiv.className = "forecast-day"
+    var dayTextSpan = document.createElement("span");
+    dayTextSpan.className = "forecast-day-text"
+    dayTextSpan.innerHTML = day;
+    var iconClass = this.config.iconTable[data.icon];
+    var icon = document.createElement("span");
+    icon.className = 'wi weathericon ' + iconClass;
+    dayDiv.appendChild(dayTextSpan);
+    dayDiv.appendChild(icon);
+    return dayDiv;
+  },
+
+  renderForecastRow: function (data, min, max, maxDayDivWidth) {
     var width = this.config.forecastWidth;
     var total = max - min;
     var rowMin = Math.round(data.temperatureMin);
@@ -192,18 +213,8 @@ Module.register("MMM-forecast-io", {
     var row = document.createElement("div");
     row.className = "forecast-row";
 
-    var dt = new Date(data.time * 1000);
-    var day = moment.weekdaysShort(dt.getDay());
-    var dayDiv = document.createElement("div");
-    var dayTextSpan = document.createElement("span");
-    dayTextSpan.innerHTML = day;
-    var iconClass = this.config.iconTable[data.icon];
-    var icon = document.createElement("span");
-    icon.className = 'wi weathericon ' + iconClass;
-    dayDiv.appendChild(dayTextSpan);
-    dayDiv.appendChild(icon);
-    dayDivWidth = this.getTextWidth(dayDiv.innerHTML);
-    dayDiv.style.width = dayDivWidth;
+    var dayDiv = this.renderForcastDayAndIcon(data);
+    dayDiv.style.width = maxDayDivWidth + "px";
 
     var minTempTextDiv = document.createElement("div");
     var minTempText = this.roundTemp(rowMin) + "\u00B0";
@@ -222,7 +233,7 @@ Module.register("MMM-forecast-io", {
 
     var bar = document.createElement("div");
     bar.className = "bar";
-    var barWidth = width - minTempTextWidth - maxTempTextWidth - dayDivWidth;
+    var barWidth = width - minTempTextWidth - maxTempTextWidth - maxDayDivWidth;
     barWidth = Math.round(barWidth * ((rowMax - rowMin) / total));
     bar.style.width = barWidth + 'px';
 
@@ -250,11 +261,22 @@ Module.register("MMM-forecast-io", {
     min = Math.round(min);
     max = Math.round(max);
 
+    var maxDayDivWidth = 0;
+    // figure out the max width of the days and icons
+    for (i = 0; i < filteredDays.length; i++) {
+      var day = filteredDays[i];
+      var dayText = this.getDayFromTime(day.time);
+      var dayWidth = this.getTextWidth(dayText, "forecast-day");
+      var iconClass = this.config.iconTable[day.icon];
+      var iconWidth = this.getTextWidth("", 'wi weathericon ' + iconClass);
+      maxDayDivWidth = Math.max(maxDayDivWidth, dayWidth + iconWidth);
+    }
+
     var display = document.createElement("div");
     display.className = "forecast";
     for (i = 0; i < filteredDays.length; i++) {
       var day = filteredDays[i];
-      var row = this.renderForecastRow(day, min, max)
+      var row = this.renderForecastRow(day, min, max, maxDayDivWidth);
       display.appendChild(row);
     }
     return display;
