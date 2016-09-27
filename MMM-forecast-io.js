@@ -208,7 +208,7 @@ Module.register("MMM-forecast-io", {
     var total = max - min;
     var rowMin = Math.round(data.temperatureMin);
     var rowMax = Math.round(data.temperatureMax);
-    var percentLeft  = Math.round(100 * ((rowMin - min) / total));
+    var interval = (width - maxDayDivWidth) / total;
 
     var row = document.createElement("div");
     row.className = "forecast-row";
@@ -222,7 +222,7 @@ Module.register("MMM-forecast-io", {
     minTempTextDiv.innerHTML = minTempText;
     minTempTextDiv.style.width = minTempTextWidth + "px";
     minTempTextDiv.className = "temp min-temp";
-    minTempTextDiv.style["margin-left"]  = percentLeft + "%";
+    minTempTextDiv.style["margin-left"] = (interval * (rowMin - min)) + "px";
 
     var maxTempTextDiv = document.createElement("div");
     var maxTempText = this.roundTemp(rowMax) + "\u00B0";
@@ -233,8 +233,7 @@ Module.register("MMM-forecast-io", {
 
     var bar = document.createElement("div");
     bar.className = "bar";
-    var barWidth = width - minTempTextWidth - maxTempTextWidth - maxDayDivWidth;
-    barWidth = Math.round(barWidth * ((rowMax - rowMin) / total));
+    var barWidth = Math.round(interval * (rowMax - rowMin));
     bar.style.width = barWidth + 'px';
 
     row.appendChild(dayDiv);
