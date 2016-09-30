@@ -109,6 +109,18 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>showForcast</code></td>
+      <td>Toggles display of the seven-day weather forecast.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>forecastWidth</code></td>
+      <td>Width of the forecast element in pixels.<br>
+        <br><b>Default value:</b>  <code>350</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>iconTable</code></td>
       <td>The conversion table to convert the weather conditions to weather-icons.<br>
         <br><b>Default value:</b><pre>iconTable: {

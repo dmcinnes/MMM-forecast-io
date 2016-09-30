@@ -17,6 +17,7 @@ Module.register("MMM-forecast-io", {
     latitude:  null,
     longitude: null,
     forecastWidth: 350,
+    showForecast: true,
     testElementID: "forecast-io-test-element",
     unitTable: {
       'default':  'auto',
@@ -157,7 +158,9 @@ Module.register("MMM-forecast-io", {
     wrapper.appendChild(large);
     wrapper.appendChild(summary);
 
-    wrapper.appendChild(this.renderWeatherForecast());
+    if (this.config.showForecast) {
+      wrapper.appendChild(this.renderWeatherForecast());
+    }
 
     // need this for subsequent loads
     wrapper.appendChild(this.createTextWidthTestElement());
