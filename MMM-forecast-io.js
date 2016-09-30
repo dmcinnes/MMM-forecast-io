@@ -2,7 +2,7 @@ Module.register("MMM-forecast-io", {
 
   defaults: {
     apiKey: "",
-    apiBase: "https://api.forecast.io/forecast",
+    apiBase: "https://api.darksky.net/forecast",
     units: config.units,
     language: config.language,
     updateInterval: 5 * 60 * 1000, // every 5 minutes
