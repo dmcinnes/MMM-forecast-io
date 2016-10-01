@@ -18,6 +18,7 @@ Module.register("MMM-forecast-io", {
     longitude: null,
     forecastWidth: 350,
     showForecast: true,
+    showPrecipitationGraph: true,
     testElementID: "forecast-io-test-element",
     unitTable: {
       'default':  'auto',
@@ -161,6 +162,10 @@ Module.register("MMM-forecast-io", {
     wrapper.appendChild(large);
     wrapper.appendChild(summary);
 
+    if (minutely && this.config.showPrecipitationGraph) {
+      wrapper.appendChild(this.renderPrecipitationGraph());
+    }
+
     if (this.config.showForecast) {
       wrapper.appendChild(this.renderWeatherForecast());
     }
@@ -169,6 +174,64 @@ Module.register("MMM-forecast-io", {
     wrapper.appendChild(this.createTextWidthTestElement());
 
     return wrapper;
+  },
+
+  renderPrecipitationGraph: function () {
+    var i;
+    var width = this.config.forecastWidth;
+    var height = Math.round(width * 0.6);
+    var element = document.createElement('canvas');
+    element.className = "precipitation-graph"
+    element.width  = width;
+    element.height = height;
+    var context = element.getContext('2d');
+
+    var sixth = Math.round(width / 6);
+    context.save();
+    context.strokeStyle = 'white';
+    context.lineWidth = 2;
+    for (i = 1; i < 6; i++) {
+      context.moveTo(i * sixth, height);
+      context.lineTo(i * sixth, height - 10);
+      context.stroke();
+    }
+    context.restore();
+
+    var third = Math.round(height / 3);
+    context.save();
+    context.strokeStyle = 'gray';
+    context.setLineDash([5, 15]);
+    context.lineWidth = 1;
+    for (i = 1; i < 3; i++) {
+      context.moveTo(0, i * third);
+      context.lineTo(width, i * third);
+      context.stroke();
+    }
+    context.restore();
+
+    var data = this.weatherData.minutely.data;
+    var stepSize = Math.round(width / data.length);
+    context.save();
+    context.strokeStyle = 'white';
+    context.fillStyle = 'white';
+    context.globalCompositeOperation = 'xor';
+    context.beginPath();
+    context.moveTo(0, height);
+    var intensity
+    for (i = 0; i < data.length; i++) {
+      if (data[i].precipProbability < 0.1) {
+        intensity = 0;
+      } else {
+        intensity = 20 * data[i].precipIntensity * height;
+      }
+      context.lineTo(i * stepSize, height - intensity);
+    }
+    context.lineTo(width, height);
+    context.closePath();
+    context.fill();
+    context.restore();
+
+    return element;
   },
 
   createTextWidthTestElement: function () {

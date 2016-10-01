@@ -80,3 +80,9 @@
   position: absolute;
   right: 0px;
 }
+
+.MMM-forecast-io .precipitation-graph {
+  border: 1px solid white;
+  border-radius: 3px;
+  margin: 1ex;
+}
