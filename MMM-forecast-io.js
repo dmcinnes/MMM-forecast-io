@@ -134,12 +134,14 @@ Module.register("MMM-forecast-io", {
     }
 
     var currentWeather = this.weatherData.currently;
+    var hourly         = this.weatherData.hourly;
     var minutely       = this.weatherData.minutely;
 
     var large = document.createElement("div");
     large.className = "large light";
 
-    var iconClass = this.config.iconTable[minutely.icon];
+    var icon = minutely ? minutely.icon : hourly.icon;
+    var iconClass = this.config.iconTable[hourly.icon];
     var icon = document.createElement("span");
     icon.className = 'big-icon wi weathericon ' + iconClass;
     large.appendChild(icon);
@@ -149,8 +151,9 @@ Module.register("MMM-forecast-io", {
     temperature.innerHTML = " " + this.temp + "&deg;";
     large.appendChild(temperature);
 
+    var summaryText = minutely ? minutely.summary : hourly.summary;
     // remove ending '.' for consistency with the interface
-    var summaryText = minutely.summary.replace(/\.$/, '');
+    summaryText = summaryText.replace(/\.$/, '');
     var summary = document.createElement("div");
     summary.className = "small dimmed";
     summary.innerHTML = summaryText;
