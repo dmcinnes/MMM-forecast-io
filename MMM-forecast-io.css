@@ -14,9 +14,9 @@
 
 .forecast-row {
   display: block;
-  height: 2.0ex;
+  height: 1.5em;
   color: white;
-  margin: 1ex 0ex;
+  overflow: hidden;
 }
 
 .forecast-row .temp {
@@ -48,8 +48,7 @@
 }
 .forecast-day .weathericon {
   display: inline-block;
-  position: absolute;
-  right: 0px;
+  float: right;
 }
 
 .MMM-forecast-io .precipitation-graph {

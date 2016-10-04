@@ -16,7 +16,7 @@ Module.register("MMM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
-    forecastWidth: 360,
+    forecastWidth: 400,
     showForecast: true,
     showPrecipitationGraph: true,
     testElementID: "forecast-io-test-element",
@@ -274,7 +274,7 @@ Module.register("MMM-forecast-io", {
 
   renderForecastRow: function (data, min, max, maxDayDivWidth) {
     var width = this.config.forecastWidth;
-    var squidgeRoom = 20; // room for padding
+    var squidgeRoom = 65; // room for padding
     var total = max - min;
     var rowMin = Math.round(data.temperatureMin);
     var rowMax = Math.round(data.temperatureMax);
@@ -284,18 +284,21 @@ Module.register("MMM-forecast-io", {
     row.style.width = width + "px";
 
     var dayDiv = this.renderForcastDayAndIcon(data);
-    dayDiv.style.width = maxDayDivWidth + "px";
+    // extra em for space
+    dayDiv.style.width = "calc("+maxDayDivWidth + "px + 1em)";
 
     var minTempTextDiv = document.createElement("div");
-    var minTempText = this.roundTemp(rowMin) + "\u00B0";
-    var minTempTextWidth = this.getTextWidth(minTempText);
+    var minTempText = this.roundTemp(rowMin) + "&deg;";
+    // for some reason it's ignoring the degree
+    var minTempTextWidth = this.getTextWidth(minTempText + "0");
     minTempTextDiv.innerHTML = minTempText;
     minTempTextDiv.style.width = minTempTextWidth + "px";
     minTempTextDiv.className = "temp min-temp";
 
     var maxTempTextDiv = document.createElement("div");
-    var maxTempText = this.roundTemp(rowMax) + "\u00B0";
-    var maxTempTextWidth = this.getTextWidth(maxTempText);
+    var maxTempText = this.roundTemp(rowMax) + "&deg;";
+    // for some reason it's ignoring the degree
+    var maxTempTextWidth = this.getTextWidth(maxTempText + "0");
     maxTempTextDiv.innerHTML = maxTempText;
     maxTempTextDiv.style.width = maxTempTextWidth + "px";
     maxTempTextDiv.className = "temp max-temp";
