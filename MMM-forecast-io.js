@@ -16,7 +16,7 @@ Module.register("MMM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
-    forecastWidth: 350,
+    forecastWidth: 360,
     showForecast: true,
     showPrecipitationGraph: true,
     testElementID: "forecast-io-test-element",
@@ -274,13 +274,14 @@ Module.register("MMM-forecast-io", {
 
   renderForecastRow: function (data, min, max, maxDayDivWidth) {
     var width = this.config.forecastWidth;
+    var squidgeRoom = 20; // room for padding
     var total = max - min;
     var rowMin = Math.round(data.temperatureMin);
     var rowMax = Math.round(data.temperatureMax);
-    var interval = (width - maxDayDivWidth) / total;
 
     var row = document.createElement("div");
     row.className = "forecast-row";
+    row.style.width = width + "px";
 
     var dayDiv = this.renderForcastDayAndIcon(data);
     dayDiv.style.width = maxDayDivWidth + "px";
@@ -291,7 +292,6 @@ Module.register("MMM-forecast-io", {
     minTempTextDiv.innerHTML = minTempText;
     minTempTextDiv.style.width = minTempTextWidth + "px";
     minTempTextDiv.className = "temp min-temp";
-    minTempTextDiv.style["margin-left"] = (interval * (rowMin - min)) + "px";
 
     var maxTempTextDiv = document.createElement("div");
     var maxTempText = this.roundTemp(rowMax) + "\u00B0";
@@ -300,10 +300,15 @@ Module.register("MMM-forecast-io", {
     maxTempTextDiv.style.width = maxTempTextWidth + "px";
     maxTempTextDiv.className = "temp max-temp";
 
+    // everything left is for the bar
+    var interval = (width - maxDayDivWidth - minTempTextWidth - maxTempTextWidth - squidgeRoom) / total;
     var bar = document.createElement("div");
     bar.className = "bar";
     var barWidth = Math.round(interval * (rowMax - rowMin));
     bar.style.width = barWidth + 'px';
+
+    // move the bar to the start
+    minTempTextDiv.style["margin-left"] = (interval * (rowMin - min)) + "px";
 
     row.appendChild(dayDiv);
     row.appendChild(minTempTextDiv);
