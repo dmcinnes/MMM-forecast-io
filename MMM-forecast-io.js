@@ -144,7 +144,7 @@ Module.register("MMM-forecast-io", {
     var icon = minutely ? minutely.icon : hourly.icon;
     var iconClass = this.config.iconTable[hourly.icon];
     var icon = document.createElement("span");
-    icon.className = 'big-icon wi weathericon ' + iconClass;
+    icon.className = 'big-icon wi ' + iconClass;
     large.appendChild(icon);
 
     var temperature = document.createElement("span");
