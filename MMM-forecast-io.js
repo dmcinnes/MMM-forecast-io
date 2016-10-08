@@ -160,7 +160,7 @@ Module.register("MMM-forecast-io", {
     summary.innerHTML = summaryText;
 
     wrapper.appendChild(large);
-    wrapper.appendChild(summary);
+    // wrapper.appendChild(summary);
 
     if (minutely && this.config.showPrecipitationGraph) {
       wrapper.appendChild(this.renderPrecipitationGraph());
@@ -273,50 +273,43 @@ Module.register("MMM-forecast-io", {
   },
 
   renderForecastRow: function (data, min, max, maxDayDivWidth) {
-    var width = this.config.forecastWidth;
-    var squidgeRoom = 65; // room for padding
     var total = max - min;
-    var rowMin = Math.round(data.temperatureMin);
-    var rowMax = Math.round(data.temperatureMax);
+    var rowMinTemp = this.roundTemp(data.temperatureMin);
+    var rowMaxTemp = this.roundTemp(data.temperatureMax);
 
     var row = document.createElement("div");
     row.className = "forecast-row";
-    row.style.width = width + "px";
 
-    var dayDiv = this.renderForcastDayAndIcon(data);
+    // var dayDiv = this.renderForcastDayAndIcon(data);
     // extra em for space
-    dayDiv.style.width = "calc("+maxDayDivWidth + "px + 1em)";
+    // dayDiv.style.width = "calc("+maxDayDivWidth + "px + 1em)";
 
-    var minTempTextDiv = document.createElement("div");
-    var minTempText = this.roundTemp(rowMin) + "&deg;";
-    // for some reason it's ignoring the degree
-    var minTempTextWidth = this.getTextWidth(minTempText + "0");
-    minTempTextDiv.innerHTML = minTempText;
-    minTempTextDiv.style.width = minTempTextWidth + "px";
+    var minTempTextDiv = document.createElement("span");
+    minTempTextDiv.innerHTML = rowMinTemp + "&deg;";
     minTempTextDiv.className = "temp min-temp";
 
-    var maxTempTextDiv = document.createElement("div");
-    var maxTempText = this.roundTemp(rowMax) + "&deg;";
-    // for some reason it's ignoring the degree
-    var maxTempTextWidth = this.getTextWidth(maxTempText + "0");
-    maxTempTextDiv.innerHTML = maxTempText;
-    maxTempTextDiv.style.width = maxTempTextWidth + "px";
+    var maxTempTextDiv = document.createElement("span");
+    maxTempTextDiv.innerHTML = rowMaxTemp + "&deg;";
     maxTempTextDiv.className = "temp max-temp";
 
-    // everything left is for the bar
-    var interval = (width - maxDayDivWidth - minTempTextWidth - maxTempTextWidth - squidgeRoom) / total;
-    var bar = document.createElement("div");
+    var interval = 100 / total;
+    var bar = document.createElement("span");
     bar.className = "bar";
-    var barWidth = Math.round(interval * (rowMax - rowMin));
-    bar.style.width = barWidth + 'px';
+    var innerBar = document.createElement("span");
+    innerBar.className = "inner-bar";
+    bar.appendChild(minTempTextDiv);
+    bar.appendChild(innerBar);
+    bar.appendChild(maxTempTextDiv);
+    var barWidth = Math.round(interval * (rowMaxTemp - rowMinTemp));
+    innerBar.style.width = barWidth + '%';
 
-    // move the bar to the start
-    minTempTextDiv.style["margin-left"] = (interval * (rowMin - min)) + "px";
+    row.style["left"] = (interval * (rowMinTemp - min)) + "%";
+    // row.style["right"] = (interval * (max - rowMaxTemp)) + "%";
+    // row.style["margin-left"] = (interval * (rowMin - min)) + "%";
+    // row.style["margin-right"] = (interval * (rowMax - max)) + "%";
 
-    row.appendChild(dayDiv);
-    row.appendChild(minTempTextDiv);
+    // row.appendChild(dayDiv);
     row.appendChild(bar);
-    row.appendChild(maxTempTextDiv);
     return row;
   },
 

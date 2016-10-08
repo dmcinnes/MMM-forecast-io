@@ -10,32 +10,31 @@
 .forecast {
   text-align: left;
   overflow: hidden;
+  position: relative;
 }
 
 .forecast-row {
   display: block;
-  height: 1.5em;
   color: white;
-  overflow: hidden;
-}
-
-.forecast-row .temp {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 5px 0px;
-}
-
-.forecast-row .temp.min-temp {
-  text-align: right;
+  position: relative;
+  /* overflow: hidden; */
+  margin-right: 2em;
 }
 
 .forecast-row .bar {
-  display: inline-block;
+  display: table;
+}
+
+.forecast-row .bar>span {
+  display: table-cell;
+  text-align: center;
+}
+
+.forecast-row .inner-bar {
   background-color: white;
-  height: 2.0ex;
-  border-radius: 1ex;
-  vertical-align: middle;
-  margin: 0px 2px;
+  border-radius: 1em;
+  border: 0.4ex black solid;
+  background-clip: padding-box;
 }
 
 .forecast-day {
