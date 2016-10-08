@@ -11,30 +11,37 @@
   text-align: left;
   overflow: hidden;
   position: relative;
+  width: 500px;
 }
 
 .forecast-row {
   display: block;
   color: white;
   position: relative;
-  /* overflow: hidden; */
+  overflow: hidden;
   margin-right: 2em;
 }
 
 .forecast-row .bar {
-  display: table;
-}
-
-.forecast-row .bar>span {
-  display: table-cell;
-  text-align: center;
-}
-
-.forecast-row .inner-bar {
+  display: inline-block;
+  position: relative;
   background-color: white;
   border-radius: 1em;
   border: 0.4ex black solid;
   background-clip: padding-box;
+}
+.forecast-row .bar:before {
+  content: attr(data-min-temp) '\00b0';
+  display: inline-block;
+  color: red;
+  position: absolute;
+  margin-left: -1em;
+}
+.forecast-row .bar:after {
+  content: attr(data-max-temp) '\00b0';
+  display: inline-block;
+  color: red;
+  position: absolute;
 }
 
 .forecast-day {

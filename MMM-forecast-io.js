@@ -284,27 +284,17 @@ Module.register("MMM-forecast-io", {
     // extra em for space
     // dayDiv.style.width = "calc("+maxDayDivWidth + "px + 1em)";
 
-    var minTempTextDiv = document.createElement("span");
-    minTempTextDiv.innerHTML = rowMinTemp + "&deg;";
-    minTempTextDiv.className = "temp min-temp";
-
-    var maxTempTextDiv = document.createElement("span");
-    maxTempTextDiv.innerHTML = rowMaxTemp + "&deg;";
-    maxTempTextDiv.className = "temp max-temp";
-
     var interval = 100 / total;
     var bar = document.createElement("span");
     bar.className = "bar";
-    var innerBar = document.createElement("span");
-    innerBar.className = "inner-bar";
-    bar.appendChild(minTempTextDiv);
-    bar.appendChild(innerBar);
-    bar.appendChild(maxTempTextDiv);
     var barWidth = Math.round(interval * (rowMaxTemp - rowMinTemp));
-    innerBar.style.width = barWidth + '%';
+    bar.style.width = barWidth + '%';
+    bar.setAttribute("data-min-temp", rowMinTemp);
+    bar.setAttribute("data-max-temp", rowMaxTemp);
+    bar.innerHTML = "nbsp;";
 
-    row.style["left"] = (interval * (rowMinTemp - min)) + "%";
-    // row.style["right"] = (interval * (max - rowMaxTemp)) + "%";
+    bar.style["left"] = (interval * (rowMinTemp - min)) + "%";
+    // bar.style["right"] = (interval * (max - rowMaxTemp)) + "%";
     // row.style["margin-left"] = (interval * (rowMin - min)) + "%";
     // row.style["margin-right"] = (interval * (rowMax - max)) + "%";
 
