@@ -26,6 +26,7 @@
 
 .forecast-row .bar {
   background-color: white;
+  line-height: 0.8em;
   border-radius: 1em;
   border: 0.5ex black solid;
   background-clip: padding-box;
