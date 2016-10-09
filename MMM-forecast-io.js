@@ -274,6 +274,7 @@ Module.register("MMM-forecast-io", {
 
   renderForecastRow: function (data, min, max, maxDayDivWidth) {
     var total = max - min;
+    var interval = 100 / total;
     var rowMinTemp = this.roundTemp(data.temperatureMin);
     var rowMaxTemp = this.roundTemp(data.temperatureMax);
 
@@ -284,32 +285,30 @@ Module.register("MMM-forecast-io", {
     // extra em for space
     // dayDiv.style.width = "calc("+maxDayDivWidth + "px + 1em)";
 
-    var minTempTextDiv = document.createElement("span");
-    minTempTextDiv.innerHTML = rowMinTemp + "&deg;";
-    minTempTextDiv.className = "temp min-temp";
+    var minTemp = document.createElement("span");
+    minTemp.innerHTML = rowMinTemp + "&deg;";
+    minTemp.className = "temp min-temp";
 
-    var maxTempTextDiv = document.createElement("span");
-    maxTempTextDiv.innerHTML = rowMaxTemp + "&deg;";
-    maxTempTextDiv.className = "temp max-temp";
+    var maxTemp = document.createElement("span");
+    maxTemp.innerHTML = rowMaxTemp + "&deg;";
+    maxTemp.className = "temp max-temp";
 
-    var interval = 100 / total;
     var bar = document.createElement("span");
     bar.className = "bar";
-    var innerBar = document.createElement("span");
-    innerBar.className = "inner-bar";
-    bar.appendChild(minTempTextDiv);
-    bar.appendChild(innerBar);
-    bar.appendChild(maxTempTextDiv);
+    bar.innerHTML = rowMaxTemp - rowMinTemp;
     var barWidth = Math.round(interval * (rowMaxTemp - rowMinTemp));
-    innerBar.style.width = barWidth + '%';
+    bar.style.width = barWidth + '%';
 
-    row.style["left"] = (interval * (rowMinTemp - min)) + "%";
-    // row.style["right"] = (interval * (max - rowMaxTemp)) + "%";
-    // row.style["margin-left"] = (interval * (rowMin - min)) + "%";
-    // row.style["margin-right"] = (interval * (rowMax - max)) + "%";
+    var leftSpacer = document.createElement("span");
+    leftSpacer.style.width = (interval * (rowMinTemp - min)) + "%";
+    var rightSpacer = document.createElement("span");
+    rightSpacer.style.width = (interval * (max - rowMaxTemp)) + "%";
 
-    // row.appendChild(dayDiv);
+    row.appendChild(leftSpacer);
+    row.appendChild(minTemp);
     row.appendChild(bar);
+    row.appendChild(maxTemp);
+    row.appendChild(rightSpacer);
     return row;
   },
 
