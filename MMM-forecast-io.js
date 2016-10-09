@@ -183,7 +183,7 @@ Module.register("MMM-forecast-io", {
 
     var sixth = Math.round(width / 6);
     context.save();
-    context.strokeStyle = 'white';
+    context.strokeStyle = 'gray';
     context.lineWidth = 2;
     for (i = 1; i < 6; i++) {
       context.moveTo(i * sixth, height);
