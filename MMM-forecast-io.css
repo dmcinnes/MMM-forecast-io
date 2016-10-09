@@ -9,22 +9,38 @@
 
 .forecast {
   text-align: left;
-  overflow: hidden;
-  width: 400px;
+  width: 400px !important;
 }
 
 .forecast-row {
+}
+
+.forecast-row>span {
+  display: table-cell;
+  width: 1px;
+}
+
+.forecast-row .forecast-day {
+  text-align: left;
+  padding-right: 0.2em;
+}
+.forecast-row .weathericon {
+  text-align: center;
+  padding-right: 0.2em;
+}
+
+.forecast-bar {
   display: table;
   color: white;
   overflow: hidden;
 }
 
-.forecast-row>span {
+.forecast-bar>span {
   display: table-cell;
   text-align: center;
 }
 
-.forecast-row .bar {
+.forecast-bar .bar {
   background-color: white;
   line-height: 0.8em;
   border-radius: 1em;
