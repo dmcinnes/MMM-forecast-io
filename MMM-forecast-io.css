@@ -47,3 +47,8 @@
   background-clip: padding-box;
   color: black;
 }
+
+.MMM-forecast-io .precipitation-graph {
+  border: 1px solid white;
+  margin: 1ex;
+}

@@ -16,7 +16,7 @@ Module.register("MMM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
-    forecastWidth: 400,
+    precipitationGraphWidth: 400,
     showForecast: true,
     showPrecipitationGraph: true,
     testElementID: "forecast-io-test-element",
@@ -158,7 +158,7 @@ Module.register("MMM-forecast-io", {
     summary.innerHTML = summaryText;
 
     wrapper.appendChild(large);
-    // wrapper.appendChild(summary);
+    wrapper.appendChild(summary);
 
     if (minutely && this.config.showPrecipitationGraph) {
       wrapper.appendChild(this.renderPrecipitationGraph());
@@ -173,8 +173,8 @@ Module.register("MMM-forecast-io", {
 
   renderPrecipitationGraph: function () {
     var i;
-    var width = this.config.forecastWidth;
-    var height = Math.round(width * 0.6);
+    var width = this.config.precipitationGraphWidth;
+    var height = Math.round(width * 0.3);
     var element = document.createElement('canvas');
     element.className = "precipitation-graph"
     element.width  = width;
@@ -217,7 +217,7 @@ Module.register("MMM-forecast-io", {
       if (data[i].precipProbability < 0.1) {
         intensity = 0;
       } else {
-        intensity = 20 * data[i].precipIntensity * height;
+        intensity = data[i].precipIntensity * height * 5;
       }
       context.lineTo(i * stepSize, height - intensity);
     }
