@@ -47,21 +47,3 @@
   background-clip: padding-box;
   color: black;
 }
-
-.forecast-day {
-  display: inline-block;
-  margin-right: 0.5em;
-}
-.forecast-day .forecast-day-text {
-  display: inline-block;
-}
-.forecast-day .weathericon {
-  display: inline-block;
-  float: right;
-}
-
-.MMM-forecast-io .precipitation-graph {
-  border: 1px solid white;
-  border-radius: 3px;
-  margin: 1ex;
-}
