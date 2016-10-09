@@ -129,8 +129,6 @@ Module.register("MMM-forecast-io", {
     if (!this.loaded) {
       wrapper.innerHTML = this.translate('LOADING');
       wrapper.className = "dimmed light small";
-      // need this for the initial load
-      wrapper.appendChild(this.createTextWidthTestElement());
       return wrapper;
     }
 
@@ -169,9 +167,6 @@ Module.register("MMM-forecast-io", {
     if (this.config.showForecast) {
       wrapper.appendChild(this.renderWeatherForecast());
     }
-
-    // need this for subsequent loads
-    wrapper.appendChild(this.createTextWidthTestElement());
 
     return wrapper;
   },
@@ -232,24 +227,6 @@ Module.register("MMM-forecast-io", {
     context.restore();
 
     return element;
-  },
-
-  createTextWidthTestElement: function () {
-    var element = document.createElement("div");
-    element.id = this.config.testElementID;
-    element.style.position = 'absolute';
-    element.style.visibility = 'hidden';
-    element.style.height = 'auto';
-    element.style.width = 'auto';
-    element.style['white-space'] = 'nowrap';
-    return element;
-  },
-
-  getTextWidth: function (text, classes) {
-    var element = document.getElementById(this.config.testElementID);
-    element.className = classes || "";
-    element.innerHTML = text;
-    return element.clientWidth + 1;
   },
 
   getDayFromTime: function (time) {
