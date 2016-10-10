@@ -151,10 +151,8 @@ Module.register("MMM-forecast-io", {
     large.appendChild(temperature);
 
     var summaryText = minutely ? minutely.summary : hourly.summary;
-    // remove ending '.' for consistency with the interface
-    summaryText = summaryText.replace(/\.$/, '');
     var summary = document.createElement("div");
-    summary.className = "small dimmed";
+    summary.className = "small dimmed summary";
     summary.innerHTML = summaryText;
 
     wrapper.appendChild(large);
@@ -176,7 +174,7 @@ Module.register("MMM-forecast-io", {
     var width = this.config.precipitationGraphWidth;
     var height = Math.round(width * 0.3);
     var element = document.createElement('canvas');
-    element.className = "precipitation-graph"
+    element.className = "precipitation-graph";
     element.width  = width;
     element.height = height;
     var context = element.getContext('2d');

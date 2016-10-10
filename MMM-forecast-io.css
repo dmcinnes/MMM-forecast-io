@@ -1,3 +1,6 @@
+.MMM-forecast-io {
+}
+
 .MMM-forecast-io .big-icon {
   font-size: 75%;
   line-height: 65px;
@@ -7,9 +10,14 @@
   transform: translate(0, -3px);
 }
 
+.MMM-forecast-io .summary {
+  width: 400px;
+}
+
 .forecast {
   text-align: left;
-  width: 400px !important;
+  min-width: 400px;
+  margin-top: 1ex;
 }
 
 .forecast-row {
