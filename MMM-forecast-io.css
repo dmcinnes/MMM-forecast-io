@@ -14,40 +14,40 @@
   width: 400px;
 }
 
-.forecast {
+.MMM-forecast-io .forecast {
   text-align: left;
   min-width: 400px;
   margin-top: 1ex;
 }
 
-.forecast-row {
+.MMM-forecast-io .forecast-row {
 }
 
-.forecast-row>span {
+.MMM-forecast-io .forecast-row>span {
   display: table-cell;
   width: 1px;
 }
 
-.forecast-row .forecast-day {
+.MMM-forecast-io .forecast-row .forecast-day {
   text-align: left;
   padding-right: 0.2em;
 }
-.forecast-row .weathericon {
+.MMM-forecast-io .forecast-row .weathericon {
   text-align: center;
   padding-right: 0.5em;
 }
 
-.forecast-bar {
+.MMM-forecast-io .forecast-bar {
   display: table;
   overflow: hidden;
 }
 
-.forecast-bar>span {
+.MMM-forecast-io .forecast-bar>span {
   display: table-cell;
   text-align: center;
 }
 
-.forecast-bar .bar {
+.MMM-forecast-io .forecast-bar .bar {
   background-color: #aaa;
   line-height: 0.8em;
   border-radius: 1em;
@@ -59,4 +59,17 @@
 .MMM-forecast-io .precipitation-graph {
   border: 1px solid #aaa;
   margin-top: 1ex;
+}
+
+.small.MMM-forecast-io .forecast {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.small.MMM-forecast-io .summary {
+  width: 300px;
+}
+
+.small.MMM-forecast-io .precipitation-graph {
+  width: 300px;
 }
