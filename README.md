@@ -115,9 +115,15 @@ modules: [
       </td>
     </tr>
     <tr>
-      <td><code>forecastWidth</code></td>
-      <td>Width of the forecast element in pixels.<br>
-        <br><b>Default value:</b>  <code>350</code>
+      <td><code>showPrecipitationGraph</code></td>
+      <td>Toggles display of the precipitation graph.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>precipitationGraphWidth</code></td>
+      <td>Width of the precipitation graph element in pixels. Scales height to match.<br>
+        <br><b>Default value:</b>  <code>400</code>
       </td>
     </tr>
     <tr>

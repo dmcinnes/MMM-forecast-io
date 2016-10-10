@@ -16,10 +16,9 @@ Module.register("MMM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
-    precipitationGraphWidth: 400,
     showForecast: true,
     showPrecipitationGraph: true,
-    testElementID: "forecast-io-test-element",
+    precipitationGraphWidth: 400,
     unitTable: {
       'default':  'auto',
       'metric':   'si',
