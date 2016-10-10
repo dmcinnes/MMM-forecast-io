@@ -127,6 +127,13 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>precipitationProbabilityThreshold</code></td>
+      <td>Probability threshold at which rain is rendered onto the precipitation graph.<br>
+          See the <a href="https://darksky.net/dev/docs/response#data-point">Darksky.net API documentation</a> for more details.<br>
+        <br><b>Default value:</b>  <code>0.1</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>iconTable</code></td>
       <td>The conversion table to convert the weather conditions to weather-icons.<br>
         <br><b>Default value:</b><pre>iconTable: {
