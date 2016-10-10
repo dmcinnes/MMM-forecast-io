@@ -19,6 +19,7 @@ Module.register("MMM-forecast-io", {
     showForecast: true,
     showPrecipitationGraph: true,
     precipitationGraphWidth: 400,
+    precipitationProbabilityThreshold: 0.1,
     unitTable: {
       'default':  'auto',
       'metric':   'si',
@@ -157,7 +158,8 @@ Module.register("MMM-forecast-io", {
     wrapper.appendChild(large);
     wrapper.appendChild(summary);
 
-    if (minutely && this.config.showPrecipitationGraph) {
+    if (this.config.showPrecipitationGraph &&
+        this.isAnyPrecipitation(minutely)) {
       wrapper.appendChild(this.renderPrecipitationGraph());
     }
 
@@ -166,6 +168,20 @@ Module.register("MMM-forecast-io", {
     }
 
     return wrapper;
+  },
+
+  isAnyPrecipitation: function (minutely) {
+    if (!minutely) {
+      return false;
+    }
+    var data = this.weatherData.minutely.data;
+    var threshold = this.config.precipitationProbabilityThreshold;
+    for (i = 0; i < data.length; i++) {
+      if (data[i].precipProbability > threshold) {
+        return true;
+      }
+    }
+    return false;
   },
 
   renderPrecipitationGraph: function () {
@@ -209,9 +225,10 @@ Module.register("MMM-forecast-io", {
     context.globalCompositeOperation = 'xor';
     context.beginPath();
     context.moveTo(0, height);
-    var intensity
+    var threshold = this.config.precipitationProbabilityThreshold;
+    var intensity;
     for (i = 0; i < data.length; i++) {
-      if (data[i].precipProbability < 0.1) {
+      if (data[i].precipProbability < threshold) {
         intensity = 0;
       } else {
         intensity = data[i].precipIntensity * height * 5;
