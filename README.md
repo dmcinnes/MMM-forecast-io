@@ -19,7 +19,7 @@ modules: [
     position: 'top_right',  // This can be any of the regions.
     config: {
       // See 'Configuration options' for more information.
-      apiKey: 'abcde12345abcde12345abcde12345ab' // Dark Sky API key.
+      apiKey: 'abcde12345abcde12345abcde12345ab', // Dark Sky API key.
       // Only required if geolocation doesn't work:
       latitude:   16.77532,
       longitude: -3.008265
