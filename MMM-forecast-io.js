@@ -89,7 +89,7 @@ Module.register("MMM-forecast-io", {
       // for debugging
       this.processWeather(this.config.data);
     } else {
-      getJSONP(url, this.processWeather.bind(this));
+      getJSONP(url, this.processWeather.bind(this), this.processWeatherError.bind(this));
     }
   },
 
@@ -101,6 +101,14 @@ Module.register("MMM-forecast-io", {
     this.weatherData = data;
     this.temp = this.roundTemp(this.weatherData.currently.temperature);
     this.updateDom(this.config.animationSpeed);
+    this.scheduleUpdate();
+  },
+
+  processWeatherError: function (error) {
+    if (this.config.debug) {
+      console.log('process weather error', error);
+    }
+    // try later
     this.scheduleUpdate();
   },
 
