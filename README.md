@@ -115,6 +115,12 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>maxDaysForecast</code></td>
+      <td>Limit how many days of weather forecast. Useful values 1-7<br>
+        <br><b>Default value:</b>  <code>7</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>showPrecipitationGraph</code></td>
       <td>Toggles display of the precipitation graph.<br>
         <br><b>Default value:</b>  <code>true</code>
