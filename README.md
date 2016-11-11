@@ -109,7 +109,7 @@ modules: [
       </td>
     </tr>
     <tr>
-      <td><code>showForcast</code></td>
+      <td><code>showForecast</code></td>
       <td>Toggles display of the seven-day weather forecast.<br>
         <br><b>Default value:</b>  <code>true</code>
       </td>
