@@ -155,8 +155,8 @@ Module.register("MMM-forecast-io", {
     var large = document.createElement("div");
     large.className = "large light";
 
-    var icon = minutely ? minutely.icon : hourly.icon;
-    var iconClass = this.config.iconTable[hourly.icon];
+    var icon = currentWeather ? currentWeather.icon : hourly.icon;
+    var iconClass = this.config.iconTable[icon];
     var icon = document.createElement("span");
     icon.className = 'big-icon wi ' + iconClass;
     large.appendChild(icon);
