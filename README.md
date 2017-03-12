@@ -7,6 +7,10 @@ Unfortunately, Geolocation will currently not work with MagicMirror's Electron-b
 https://github.com/electron/electron/issues/6648
 If you are using MagicMirror headless with your own browser this shouldn't be a problem.
 
+Note also that the graph is based on degrees fahrenheit.  If you use another unit, you will probably have to adjust the code for proper vertical scaling.
+
+This module uses white icons by default.  If you prefer color coded icons, merge the contents of the "Color-icons.md" file into your "css\custom.css" file. 
+
 ![screenshot](screenshot.png)
 
 ## Using the module
@@ -20,6 +24,15 @@ modules: [
     config: {
       // See 'Configuration options' for more information.
       apiKey: 'abcde12345abcde12345abcde12345ab', // Dark Sky API key.
+
+      updateInterval: 900000,  // 15 minutes
+
+      showWind: true,
+      showSunrise: true, 
+      showSummary: true,
+      showPrecipitationGraph: true,
+      showForecast: true,
+
       // Only required if geolocation doesn't work:
       latitude:   16.77532,
       longitude: -3.008265
@@ -110,7 +123,7 @@ modules: [
     </tr>
     <tr>
       <td><code>showForcast</code></td>
-      <td>Toggles display of the seven-day weather forecast.<br>
+      <td>Toggles display of the seven-day weather forecast list.<br>
         <br><b>Default value:</b>  <code>true</code>
       </td>
     </tr>
@@ -122,15 +135,26 @@ modules: [
     </tr>
     <tr>
       <td><code>precipitationGraphWidth</code></td>
-      <td>Width of the precipitation graph element in pixels. Scales height to match.<br>
+      <td>Width of the precipitation graph element in pixels. Scales height to 30 percent of width automatically.<br>
         <br><b>Default value:</b>  <code>400</code>
       </td>
     </tr>
     <tr>
-      <td><code>precipitationProbabilityThreshold</code></td>
-      <td>Probability threshold at which rain is rendered onto the precipitation graph.<br>
-          See the <a href="https://darksky.net/dev/docs/response#data-point">Darksky.net API documentation</a> for more details.<br>
-        <br><b>Default value:</b>  <code>0.1</code>
+      <td><code>showWind</code></td>
+      <td>Toggles display of current wind speed next.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>showSunrise</code></td>
+      <td>Toggles display of next sunrise or sunset time.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>showSummary</code></td>
+      <td>Toggles display of next hour's weather summary text.<br>
+        <br><b>Default value:</b>  <code>true</code>
       </td>
     </tr>
     <tr>
