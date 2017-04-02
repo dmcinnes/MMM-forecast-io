@@ -3,9 +3,7 @@ This an extension for [MagicMirror](https://github.com/MichMich/MagicMirror) tha
 
 This module makes use of the [geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/Using_geolocation) to determine the location of the mirror. This can be turned off by setting `latitude` and `longitude` in the module's config (see [Configuration options below](#configuration-options)).
 
-Unfortunately, Geolocation will currently not work with MagicMirror's Electron-based browser wrapper because of a known issue:
-https://github.com/electron/electron/issues/6648
-If you are using MagicMirror headless with your own browser this shouldn't be a problem.
+Unless running headless in a browser, Geolocation requires setting the [GOOGLE_API_KEY environment variable](https://github.com/electron/electron/blob/master/docs/api/environment-variables.md#google_api_key).
 
 ![screenshot](screenshot.png)
 
