@@ -21,6 +21,7 @@ Module.register("MMM-forecast-io", {
     showPrecipitationGraph: true,
     precipitationGraphWidth: 400,
     precipitationProbabilityThreshold: 0.1,
+    precipitationIntensityScaleTop: 0.2,
     unitTable: {
       'default':  'auto',
       'metric':   'si',
@@ -236,11 +237,22 @@ Module.register("MMM-forecast-io", {
     context.moveTo(0, height);
     var threshold = this.config.precipitationProbabilityThreshold;
     var intensity;
+
+    // figure out how we're going to scale our graph
+    var maxIntensity = 0;
+    for (i = 0; i < data.length; i++) {
+      maxIntensity = Math.max(maxIntensity, data[i].precipIntensity);
+    }
+    // if current intensity is above our normal scale top, make that the top
+    if (maxIntensity < this.config.precipitationIntensityScaleTop) {
+      maxIntensity = this.config.precipitationIntensityScaleTop;
+    }
+
     for (i = 0; i < data.length; i++) {
       if (data[i].precipProbability < threshold) {
         intensity = 0;
       } else {
-        intensity = data[i].precipIntensity * height * 5;
+        intensity = height * (data[i].precipIntensity / maxIntensity);
       }
       context.lineTo(i * stepSize, height - intensity);
     }
