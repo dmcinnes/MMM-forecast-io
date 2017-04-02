@@ -119,9 +119,15 @@ modules: [
       </td>
     </tr>
     <tr>
-      <td><code>showPrecipitationGraph</code></td>
+      <td><code>enablePrecipitationGraph</code></td>
       <td>Toggles display of the precipitation graph.<br>
         <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>alwaysShowPrecipitationGraph</code></td>
+      <td>Force the precipition graph to always show, and not just when it's raining..<br>
+        <br><b>Default value:</b>  <code>false</code>
       </td>
     </tr>
     <tr>

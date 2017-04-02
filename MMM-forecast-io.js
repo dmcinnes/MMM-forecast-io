@@ -18,7 +18,8 @@ Module.register("MMM-forecast-io", {
     longitude: null,
     showForecast: true,
     maxDaysForecast: 7,   // maximum number of days to show in forecast
-    showPrecipitationGraph: true,
+    enablePrecipitationGraph: true,
+    alwaysShowPrecipitationGraph: false,
     precipitationGraphWidth: 400,
     precipitationProbabilityThreshold: 0.1,
     precipitationIntensityScaleTop: 0.2,
@@ -68,6 +69,11 @@ Module.register("MMM-forecast-io", {
 
   start: function () {
     Log.info("Starting module: " + this.name);
+
+    // still accept the old config
+    if (this.config.hasOwnProperty("showPrecipitationGraph")) {
+      this.config.enablePrecipitationGraph = this.config.showPrecipitationGraph;
+    }
 
     if (this.shouldLookupGeolocation()) {
       this.getLocation();
@@ -168,8 +174,9 @@ Module.register("MMM-forecast-io", {
     wrapper.appendChild(large);
     wrapper.appendChild(summary);
 
-    if (this.config.showPrecipitationGraph &&
-        this.isAnyPrecipitation(minutely)) {
+    if (this.config.alwaysShowPrecipitationGraph ||
+        (this.config.enablePrecipitationGraph &&
+         this.isAnyPrecipitation(minutely))) {
       wrapper.appendChild(this.renderPrecipitationGraph());
     }
 
