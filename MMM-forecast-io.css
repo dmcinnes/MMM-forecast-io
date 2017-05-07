@@ -51,7 +51,7 @@
   background-color: #aaa;
   line-height: 0.8em;
   border-radius: 1em;
-  border: 0.5ex black solid;
+  border: 0.5ex transparent solid;
   background-clip: padding-box;
   color: black;
 }
