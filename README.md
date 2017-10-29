@@ -126,8 +126,14 @@ modules: [
     </tr>
     <tr>
       <td><code>alwaysShowPrecipitationGraph</code></td>
-      <td>Force the precipition graph to always show, and not just when it's raining..<br>
+      <td>Force the precipition graph to always show, and not just when it's raining.<br>
         <br><b>Default value:</b>  <code>false</code>
+      </td>
+    </tr>
+     <tr>
+      <td><code>precipitationFillColor</code></td>
+      <td>Choose the color of the precipitation graph. Will accept hex value or color names of Javascript-friendly colors. See <a href="http://www.javascripter.net/faq/colornam.htm">this page</a> for a list of colors. "dodgerblue" appears to best mimic the Dark Sky app.<br>
+        <br><b>Default value:</b>  <code>white</code>
       </td>
     </tr>
     <tr>

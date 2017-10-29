@@ -21,6 +21,7 @@ Module.register("MMM-forecast-io", {
     enablePrecipitationGraph: true,
     alwaysShowPrecipitationGraph: false,
     precipitationGraphWidth: 400,
+    precipitationFillColor: 'white',
     precipitationProbabilityThreshold: 0.1,
     precipitationIntensityScaleTop: 0.2,
     unitTable: {
@@ -238,7 +239,7 @@ Module.register("MMM-forecast-io", {
     var stepSize = Math.round(width / data.length);
     context.save();
     context.strokeStyle = 'white';
-    context.fillStyle = 'white';
+    context.fillStyle = this.config.precipitationFillColor;
     context.globalCompositeOperation = 'xor';
     context.beginPath();
     context.moveTo(0, height);
