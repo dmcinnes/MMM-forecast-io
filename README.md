@@ -101,6 +101,11 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>showIndoorTemperature</code></td>
+      <td>If you have another module that emits the INDOOR_TEMPERATURE notification, the indoor temperature will be displayed.<br>
+        <br><b>Default value:</b>  <code>false</code>
+      </td>
+    </tr><tr>
       <td><code>apiBase</code></td>
       <td>The Dark Sky API base URL.<br>
         <br><b>Default value:</b>  <code>'https://api.darksky.net/forecast'</code>
