@@ -26,24 +26,24 @@ Module.register("MMM-forecast-io", {
     precipitationProbabilityThreshold: 0.1,
     precipitationIntensityScaleTop: 0.2,
     unitTable: {
-      'default': 'auto',
-      'metric': 'si',
+      'default':  'auto',
+      'metric':   'si',
       'imperial': 'us'
     },
     iconTable: {
-      'clear-day': 'wi-day-sunny',
-      'clear-night': 'wi-night-clear',
-      'rain': 'wi-rain',
-      'snow': 'wi-snow',
-      'sleet': 'wi-rain-mix',
-      'wind': 'wi-cloudy-gusts',
-      'fog': 'wi-fog',
-      'cloudy': 'wi-cloudy',
-      'partly-cloudy-day': 'wi-day-cloudy',
+      'clear-day':           'wi-day-sunny',
+      'clear-night':         'wi-night-clear',
+      'rain':                'wi-rain',
+      'snow':                'wi-snow',
+      'sleet':               'wi-rain-mix',
+      'wind':                'wi-cloudy-gusts',
+      'fog':                 'wi-fog',
+      'cloudy':              'wi-cloudy',
+      'partly-cloudy-day':   'wi-day-cloudy',
       'partly-cloudy-night': 'wi-night-cloudy',
-      'hail': 'wi-hail',
-      'thunderstorm': 'wi-thunderstorm',
-      'tornado': 'wi-tornado'
+      'hail':                'wi-hail',
+      'thunderstorm':        'wi-thunderstorm',
+      'tornado':             'wi-tornado'
     },
 
     debug: false
@@ -66,7 +66,7 @@ Module.register("MMM-forecast-io", {
 
   shouldLookupGeolocation: function () {
     return this.config.latitude == null &&
-      this.config.longitude == null;
+           this.config.longitude == null;
   },
 
   start: function () {
@@ -122,8 +122,8 @@ Module.register("MMM-forecast-io", {
     this.scheduleUpdate();
   },
 
-  notificationReceived: function (notification, payload, sender) {
-    switch (notification) {
+  notificationReceived: function(notification, payload, sender) {
+    switch(notification) {
       case "DOM_OBJECTS_CREATED":
         break;
       case "INDOOR_TEMPERATURE":
@@ -135,7 +135,7 @@ Module.register("MMM-forecast-io", {
     }
   },
 
-  getDom: function () {
+  getDom: function() {
     var wrapper = document.createElement("div");
 
     if (this.config.apiKey === "") {
@@ -157,8 +157,8 @@ Module.register("MMM-forecast-io", {
     }
 
     var currentWeather = this.weatherData.currently;
-    var hourly = this.weatherData.hourly;
-    var minutely = this.weatherData.minutely;
+    var hourly         = this.weatherData.hourly;
+    var minutely       = this.weatherData.minutely;
 
     var large = document.createElement("div");
     large.className = "large light";
@@ -194,8 +194,8 @@ Module.register("MMM-forecast-io", {
     wrapper.appendChild(summary);
 
     if (this.config.alwaysShowPrecipitationGraph ||
-      (this.config.enablePrecipitationGraph &&
-        this.isAnyPrecipitation(minutely))) {
+        (this.config.enablePrecipitationGraph &&
+          this.isAnyPrecipitation(minutely))) {
       wrapper.appendChild(this.renderPrecipitationGraph());
     }
 
@@ -226,7 +226,7 @@ Module.register("MMM-forecast-io", {
     var height = Math.round(width * 0.3);
     var element = document.createElement('canvas');
     element.className = "precipitation-graph";
-    element.width = width;
+    element.width  = width;
     element.height = height;
     var context = element.getContext('2d');
 
@@ -350,13 +350,11 @@ Module.register("MMM-forecast-io", {
   },
 
   renderWeatherForecast: function () {
-    var numDays = this.config.maxDaysForecast;
+    var numDays =  this.config.maxDaysForecast;
     var i;
 
     var filteredDays =
-      this.weatherData.daily.data.filter(function (d, i) {
-        return (i < numDays);
-      });
+      this.weatherData.daily.data.filter(function (d, i) { return (i < numDays); });
 
     var min = Number.MAX_VALUE;
     var max = -Number.MAX_VALUE;
@@ -385,7 +383,7 @@ Module.register("MMM-forecast-io", {
         if (self.config.debug) {
           console.log("geolocation success", location);
         }
-        self.config.latitude = location.coords.latitude;
+        self.config.latitude  = location.coords.latitude;
         self.config.longitude = location.coords.longitude;
         self.geoLocationLookupSuccess = true;
       },
@@ -404,20 +402,20 @@ Module.register("MMM-forecast-io", {
     var scalar = 1 << this.config.tempDecimalPlaces;
 
     temp *= scalar;
-    temp = Math.round(temp);
+    temp = Math.round( temp );
     temp /= scalar;
 
     return temp;
   },
 
-  scheduleUpdate: function (delay) {
+  scheduleUpdate: function(delay) {
     var nextLoad = this.config.updateInterval;
     if (typeof delay !== "undefined" && delay >= 0) {
       nextLoad = delay;
     }
 
     var self = this;
-    setTimeout(function () {
+    setTimeout(function() {
       self.updateWeather();
     }, nextLoad);
   }
