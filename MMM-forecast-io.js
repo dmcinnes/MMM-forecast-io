@@ -15,7 +15,7 @@ Module.register("MMM-forecast-io", {
       enableHighAccuracy: true,
       timeout: 5000
     },
-    latitude: null,
+    latitude:  null,
     longitude: null,
     showForecast: true,
     maxDaysForecast: 7,   // maximum number of days to show in forecast
@@ -195,7 +195,7 @@ Module.register("MMM-forecast-io", {
 
     if (this.config.alwaysShowPrecipitationGraph ||
         (this.config.enablePrecipitationGraph &&
-          this.isAnyPrecipitation(minutely))) {
+         this.isAnyPrecipitation(minutely))) {
       wrapper.appendChild(this.renderPrecipitationGraph());
     }
 
@@ -354,7 +354,7 @@ Module.register("MMM-forecast-io", {
     var i;
 
     var filteredDays =
-      this.weatherData.daily.data.filter(function (d, i) { return (i < numDays); });
+      this.weatherData.daily.data.filter( function(d, i) { return (i < numDays); });
 
     var min = Number.MAX_VALUE;
     var max = -Number.MAX_VALUE;
@@ -402,7 +402,7 @@ Module.register("MMM-forecast-io", {
     var scalar = 1 << this.config.tempDecimalPlaces;
 
     temp *= scalar;
-    temp = Math.round( temp );
+    temp  = Math.round( temp );
     temp /= scalar;
 
     return temp;
