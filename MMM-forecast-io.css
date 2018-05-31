@@ -61,9 +61,10 @@
   margin-top: 1ex;
 }
 
+/*
 .small.MMM-forecast-io .forecast {
   min-width: 200px;
-  max-width: 300px;
+  max-width: 300px; 
 }
 
 .small.MMM-forecast-io .summary {
@@ -73,3 +74,5 @@
 .small.MMM-forecast-io .precipitation-graph {
   width: 300px;
 }
+
+*/
