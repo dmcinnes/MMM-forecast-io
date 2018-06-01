@@ -70,7 +70,7 @@
   background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.75));
   line-height: 0.8em;
   border-radius: 1em;
-  border: 0.5ex black solid;
+  border: 0.5ex transparent solid;
   background-clip: padding-box;
   color: black;
 }
