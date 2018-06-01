@@ -22,6 +22,9 @@ Module.register("MMM-forecast-io", {
     precipitationGraphWidth: 400,
     showWind: true,
     showSunrise: true,
+    width: 400,
+    height: 200,
+
     unitTable: {
       'default':  'auto',
       'metric':   'si',
@@ -32,8 +35,8 @@ Module.register("MMM-forecast-io", {
       'clear-night':         'wi-night-clear',
       'rain':                'wi-rain',
       'snow':                'wi-snow',
-      'sleet':               'wi-rain-mix',
-      'wind':                'wi-cloudy-gusts',
+        'sleet':               'wi-rain-mix',
+        'wind':                'wi-cloudy-gusts',
       'fog':                 'wi-fog',
       'cloudy':              'wi-cloudy',
       'partly-cloudy-day':   'wi-day-cloudy',
@@ -53,7 +56,8 @@ Module.register("MMM-forecast-io", {
   getScripts: function () {
     return [
       'jsonp.js',
-      'moment.js'
+      'moment.js',
+      "modules/" + this.name + "/node_modules/chart.js/dist/Chart.bundle.min.js",
     ];
   },
 
@@ -187,13 +191,13 @@ Module.register("MMM-forecast-io", {
       var today      = this.weatherData.daily.data[0];
       var now        = new Date();
 
-      if (today.sunriseTime*1000 < now && today.sunsetTime*1000 > now) {
-      	var sunset = new moment.unix(today.sunsetTime).format( "h:mm a" );
-   	    sunString = '<span class="wi wi-sunset xdimmed"></span> '  + sunset;
-      } else {
-    	var sunrise = new moment.unix(today.sunriseTime).format( "h:mm a" );
-    	sunString = '<span class="wi wi-sunrise xdimmed"></span> ' + sunrise;
-      }
+      //if (today.sunriseTime*1000 < now && today.sunsetTime*1000 > now) {
+        var sunrise = new moment.unix(today.sunriseTime).format( "H:mm" );
+        sunString = '<span class="wi wi-sunrise xdimmed"></span> ' + sunrise;
+        var sunset = new moment.unix(today.sunsetTime).format( "H:mm" );
+        sunString += ' <span class="wi wi-sunset xdimmed"></span> '  + sunset;
+      //} else {
+      //}
 
       var sunTime = document.createElement("div");
       sunTime.className = "small dimmed summary";
@@ -207,19 +211,82 @@ Module.register("MMM-forecast-io", {
       var summaryText = minutely ? minutely.summary : hourly.summary;
       var summary = document.createElement("div");
       summary.className = "small dimmed summary";
-      summary.innerHTML = summaryText;
+      summary.innerHTML =  summaryText;
       wrapper.appendChild(summary);
     }
 
+
 // ======== precip graph and forecast table
     if (this.config.showPrecipitationGraph) {
-      wrapper.appendChild(this.renderPrecipitationGraph());
+      wrapper.appendChild(this.renderSVGPrecipitationGraph());
+      // wrapper.appendChild(this.renderPrecipitationGraph());
     }
     if (this.config.showForecast) {
       wrapper.appendChild(this.renderWeatherForecast());
     }
 
     return wrapper;
+  },
+
+  renderSVGPrecipitationGraph: function () {
+    var width = this.config.precipitationGraphWidth; 
+    var height = Math.round(width * 0.3);            // 120 by default
+
+    const wrapperEl = document.createElement("div");
+    wrapperEl.setAttribute("style", "position: relative; display: inline-block; width: 100%;");
+
+    // Create chart canvas
+    var chartEl  = document.createElement("canvas");
+    // chartEl.width  = 400;
+    // chartEl.height = 200;
+
+    // chartEl.style = "display: block; width: 400px; height: 200px;";
+
+    // Init chart.js
+    this.chart = new Chart(chartEl.getContext("2d"), {
+    type: 'bar',
+    data: {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 3
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        },
+        legend: {
+          display: false
+        }
+    }
+});
+
+    // Append chart
+    wrapperEl.appendChild(chartEl);
+
+    return wrapperEl;
   },
 
   renderPrecipitationGraph: function () {
@@ -421,6 +488,7 @@ Module.register("MMM-forecast-io", {
     var interval = 100 / total;
     var rowMinTemp = this.roundTemp(data.temperatureMin);
     var rowMaxTemp = this.roundTemp(data.temperatureMax);
+    var precipProbability = Math.round(data.precipProbability*100.0);
 
     var row = document.createElement("tr");
     row.className = "forecast-row";
@@ -431,6 +499,8 @@ Module.register("MMM-forecast-io", {
     var iconClass = this.config.iconTable[data.icon];
     var icon = document.createElement("span");
     icon.className = 'wi weathericon ' + iconClass;
+
+    // Temperature Bars
 
     var forecastBar = document.createElement("div");
     forecastBar.className = "forecast-bar";
@@ -461,11 +531,42 @@ Module.register("MMM-forecast-io", {
     forecastBar.appendChild(rightSpacer);
 
     var forecastBarWrapper = document.createElement("td");
+    forecastBarWrapper.className = "temperature-column";
     forecastBarWrapper.appendChild(forecastBar);
+
+    // Rain Probability Bars
+
+    var rainBar = document.createElement("div");
+    rainBar.className = "forecast-rain";
+
+    var rain = document.createElement("span");
+    if (precipProbability > 0) {rain.innerHTML = precipProbability + "%"; } else {rain.innerHTML = "&nbsp;";}
+    rain.className = "rain probability";
+
+    var probabilitySpacer = document.createElement("span");
+    probabilitySpacer.style.width = (100 - precipProbability) + "%";
+
+
+    rainBar.appendChild(probabilitySpacer);
+    rainBar.appendChild(rain);
+
+    if (precipProbability > 0) {
+      var probabilityBar = document.createElement("span");
+      probabilityBar.className = "rain-bar";
+      probabilityBar.innerHTML = "";
+      probabilityBar.style.width = precipProbability + "%";
+      rainBar.appendChild(probabilityBar);
+    }
+
+
+    var rainBarWrapper = document.createElement("td");
+    
+    rainBarWrapper.appendChild(rainBar);
 
     row.appendChild(dayTextSpan);
     row.appendChild(icon);
     row.appendChild(forecastBarWrapper);
+    row.appendChild(rainBarWrapper);
 
     return row;
   },
