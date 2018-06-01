@@ -67,7 +67,7 @@
 
 .MMM-forecast-io .forecast-bar .bar {
 /*  background-color: #aaa; */
-  background: linear-gradient(to right, rgba(0,0,255,0.5), rgba(255,0,0,0.5));
+  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.75));
   line-height: 0.8em;
   border-radius: 1em;
   border: 0.5ex black solid;
@@ -85,7 +85,7 @@
   text-align: center;
 }
 .MMM-forecast-io .forecast-rain .rain-bar {
-  background: linear-gradient(to right, rgba(0,0,255,1), rgba(0,0,255,0.5));
+  background: linear-gradient(to right, rgba(0,0,255,0.75), rgba(0,0,255,0));
   line-height: 0.8em;
   border-top-left-radius: 1em;
   border-bottom-left-radius: 1em;

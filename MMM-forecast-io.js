@@ -237,15 +237,52 @@ Module.register("MMM-forecast-io", {
 
     // Create chart canvas
     var chartEl  = document.createElement("canvas");
+    var ctx = chartEl.getContext("2d");
+
+    var dataTemp = [];
+    var dataRain = [];
+    var labels   = [];
+
+    var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+
+    for (i = 0; i < (36+1); i += 2) {
+      dataTemp.push(this.weatherData.hourly.data[i].temperature);
+      dataRain.push(this.weatherData.hourly.data[i].precipIntensity);
+      d = Date(this.weatherData.hourly.data[i].time);
+      labels.push(d)
+    }
+
+  var gradientRain = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientRain.addColorStop(0, 'rgba(0, 0, 255, 1)');   
+  gradientRain.addColorStop(0.75, 'rgba(0, 0, 255, 0)');
+  
+  var gradientTemperature = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientTemperature.addColorStop(0, 'rgba(255, 0, 0, 1)');   
+  gradientTemperature.addColorStop(0.5, 'rgba(255, 0, 0, 0)');
 
     var data = {
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [{
-          label: "Temperatur",
-          fill: false,
+      labels: labels,
+      datasets: [
+        {
+          label: "Regenmenge",
+          fill: true,
           lineTension: 0.1,
-          backgroundColor: "rgba(225,0,0,0.4)",
-          borderColor: "#aaa", // The main line color
+          backgroundColor: gradientRain,
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderCapStyle: 'butt',
+          borderDash: [],
+          borderDashOffset: 0.0,
+          // notice the gap in the data and the spanGaps: false
+          data: dataRain,
+          yAxisID: 'rain',
+          pointRadius: 0,
+        },
+        {
+          label: "Temperatur",
+          fill: true,
+          lineTension: 0.1,
+          backgroundColor: gradientTemperature,
+          borderColor: "rgba(255, 99, 132, 1)", // The main line color
           borderCapStyle: 'square',
           borderDash: [], // try [5, 15] for instance
           borderDashOffset: 0.0,
@@ -253,37 +290,43 @@ Module.register("MMM-forecast-io", {
           pointBorderWidth: 3,
           pointRadius: 4,
           // notice the gap in the data and the spanGaps: true
-          data: [65, 59, 80, 81, 56, 55, 40, ,60,55,30,78],
-          spanGaps: true,
-        }, {
-          label: "Regenmenge",
-          fill: true,
-          lineTension: 0.1,
-          backgroundColor: "rgba(0,0,167,0.4)",
-          borderColor: "rgb(0, 0, 167,0.1)",
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          // notice the gap in the data and the spanGaps: false
-          data: [10, 20, 60, 95, 64, 78, 90,,70,40,70,89],
-          spanGaps: false,
-        }
-      ]
+          data: dataTemp,
+          yAxisID: 'temperature',
+        },
+              ]
     };
 
     // Notice the scaleLabel at the same level as Ticks
     var options = {
       scales: {
-        yAxes: [{
-          gridLines: {
-            drawBorder: false,
-          },
-        }],
         xAxes: [{
-          gridLines: {
-            display: false,
-          },
+            display: false
         }],
+        yAxes: [  
+          {
+            id: 'rain',
+            position: 'right',
+            ticks: {
+              suggestedMin: 0,
+              suggestedMax: 2,
+              fontColor: "blue",
+              stepSize: 1,
+            },
+          },
+          {
+            id: 'temperature',
+            position: 'left',
+            ticks: {
+              suggestedMin: 10,
+              suggestedMax: 30,
+              fontColor: "red",
+              stepSize: 5,
+            },
+            gridLines: {
+                color: "rgba(128, 128, 128, 0.25)",
+            }
+          },
+        ],
       },
       tooltips: {
        enabled: false
@@ -294,11 +337,12 @@ Module.register("MMM-forecast-io", {
     };
 
     // Init chart.js
-    this.chart = new Chart(chartEl.getContext("2d"), {
+    this.chart = new Chart(ctx, {
       type: 'line',
       data: data,
       options: options
     });
+
 
     // Append chart
     wrapperEl.appendChild(chartEl);
