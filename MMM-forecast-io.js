@@ -233,55 +233,72 @@ Module.register("MMM-forecast-io", {
     var height = Math.round(width * 0.3);            // 120 by default
 
     const wrapperEl = document.createElement("div");
-    wrapperEl.setAttribute("style", "position: relative; display: inline-block; width: 100%;");
+    wrapperEl.setAttribute("style", "position: relative; display: inline-block; width: 100%");
 
     // Create chart canvas
     var chartEl  = document.createElement("canvas");
-    // chartEl.width  = 400;
-    // chartEl.height = 200;
 
-    // chartEl.style = "display: block; width: 400px; height: 200px;";
+    var data = {
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      datasets: [{
+          label: "Temperatur",
+          fill: false,
+          lineTension: 0.1,
+          backgroundColor: "rgba(225,0,0,0.4)",
+          borderColor: "#aaa", // The main line color
+          borderCapStyle: 'square',
+          borderDash: [], // try [5, 15] for instance
+          borderDashOffset: 0.0,
+          pointBackgroundColor: "black",
+          pointBorderWidth: 3,
+          pointRadius: 4,
+          // notice the gap in the data and the spanGaps: true
+          data: [65, 59, 80, 81, 56, 55, 40, ,60,55,30,78],
+          spanGaps: true,
+        }, {
+          label: "Regenmenge",
+          fill: true,
+          lineTension: 0.1,
+          backgroundColor: "rgba(0,0,167,0.4)",
+          borderColor: "rgb(0, 0, 167,0.1)",
+          borderCapStyle: 'butt',
+          borderDash: [],
+          borderDashOffset: 0.0,
+          // notice the gap in the data and the spanGaps: false
+          data: [10, 20, 60, 95, 64, 78, 90,,70,40,70,89],
+          spanGaps: false,
+        }
+      ]
+    };
+
+    // Notice the scaleLabel at the same level as Ticks
+    var options = {
+      scales: {
+        yAxes: [{
+          gridLines: {
+            drawBorder: false,
+          },
+        }],
+        xAxes: [{
+          gridLines: {
+            display: false,
+          },
+        }],
+      },
+      tooltips: {
+       enabled: false
+      },
+      legend: {
+        display: false
+      }
+    };
 
     // Init chart.js
     this.chart = new Chart(chartEl.getContext("2d"), {
-    type: 'bar',
-    data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 3
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        },
-        legend: {
-          display: false
-        }
-    }
-});
+      type: 'line',
+      data: data,
+      options: options
+    });
 
     // Append chart
     wrapperEl.appendChild(chartEl);
