@@ -1,7 +1,7 @@
 
 # This fork is based on the good work from dmcinnes/MMM-forecast-io
 
-![screenshot](screenshot.png)
+![screenshot](Bildschirmfoto 2018-06-01 um 7.28.06 PM.png)
 
 # MMM-Forecast-IO
 This an extension for [MagicMirror](https://github.com/MichMich/MagicMirror) that adds localized weather using the [Dark Sky API](https://darksky.net/dev/) (originally Forecast.io) -- the same service that powers the [Dark Sky App](https://darksky.net/app/).
