@@ -211,6 +211,17 @@ Module.register("MMM-forecast-io", {
       var summaryText = minutely ? minutely.summary : hourly.summary;
       var summary = document.createElement("div");
       summary.className = "small dimmed summary";
+
+      // Some German Phrases fro Darksky are somwhat "fancy". They need some replacement
+      var mapObj = {
+        "am am":"am",
+      };
+
+      var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+      summaryText = summaryText.replace(re, function(matched){
+        return mapObj[matched];
+      });
+
       summary.innerHTML =  summaryText;
       wrapper.appendChild(summary);
     }
