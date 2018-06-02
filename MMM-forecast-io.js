@@ -239,18 +239,31 @@ Module.register("MMM-forecast-io", {
     var chartEl  = document.createElement("canvas");
     var ctx = chartEl.getContext("2d");
 
-    var dataTemp = [];
+    var dataTempLine = [];
+    var dataTempDots = [];
     var dataRain = [];
     var labels   = [];
 
     var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
 
-    for (i = 0; i < (36+1); i += 2) {
-      dataTemp.push(this.weatherData.hourly.data[i].temperature);
-      dataRain.push(this.weatherData.hourly.data[i].precipIntensity);
-      d = Date(this.weatherData.hourly.data[i].time);
-      labels.push(d)
+    for (i = 0; i < (36+1); i += 1) {
+      dataTempLine.push({ x: moment.unix(this.weatherData.hourly.data[i].time).format("YYYY-MM-DD HH:MM"), y: this.weatherData.hourly.data[i].temperature });
+      if (i % 2 == 0) {
+        dataTempDots.push({ x: moment.unix(this.weatherData.hourly.data[i].time).format("YYYY-MM-DD HH:MM"), y: this.weatherData.hourly.data[i].temperature });
+      }
+      // dataRain.push({ x: moment.unix(this.weatherData.hourly.data[i].time).format("YYYY-MM-DD HH:MM"), y: this.weatherData.hourly.data[i].precipIntensity });
+      if (this.weatherData.hourly.data[i].precipIntensity > 0) { 
+        rain = this.weatherData.hourly.data[i].precipIntensity 
+      } else {
+        rain = null
+      }
+      dataRain.push({ 
+        x: moment.unix(this.weatherData.hourly.data[i].time).format("YYYY-MM-DD HH:MM"), 
+        y: rain
+      });
     }
+
+    // Log.log('dataTempLine', dataTempLine);     
 
   var gradientRain = ctx.createLinearGradient(0, 0, 0, 400);
   gradientRain.addColorStop(0, 'rgba(0, 0, 255, 1)');   
@@ -261,7 +274,7 @@ Module.register("MMM-forecast-io", {
   gradientTemperature.addColorStop(0.5, 'rgba(255, 0, 0, 0)');
 
     var data = {
-      labels: labels,
+      // labels: labels,
       datasets: [
         {
           label: "Regenmenge",
@@ -272,13 +285,29 @@ Module.register("MMM-forecast-io", {
           borderCapStyle: 'butt',
           borderDash: [],
           borderDashOffset: 0.0,
-          // notice the gap in the data and the spanGaps: false
           data: dataRain,
           yAxisID: 'rain',
           pointRadius: 0,
+          spanGaps: true,
         },
         {
-          label: "Temperatur",
+          label: "Temperatur Dots",
+          fill: false,
+          lineTension: 0.0,
+          borderColor: "rgba(255, 99, 132, 1)", // The main line color
+          borderCapStyle: 'square',
+          borderDash: [], // try [5, 15] for instance
+          borderDashOffset: 0.0,
+          pointBackgroundColor: "black",
+          pointBorderWidth: 3,
+          pointRadius: 4,
+          showLine: false,
+          // notice the gap in the data and the spanGaps: true
+          data: dataTempDots,
+          yAxisID: 'temperature',
+        },
+        {
+          label: "Temperatur Linie",
           fill: true,
           lineTension: 0.1,
           backgroundColor: gradientTemperature,
@@ -288,20 +317,36 @@ Module.register("MMM-forecast-io", {
           borderDashOffset: 0.0,
           pointBackgroundColor: "black",
           pointBorderWidth: 3,
-          pointRadius: 4,
+          pointRadius: 0,
           // notice the gap in the data and the spanGaps: true
-          data: dataTemp,
+          data: dataTempLine,
           yAxisID: 'temperature',
         },
-              ]
+      ]
     };
 
     // Notice the scaleLabel at the same level as Ticks
     var options = {
       scales: {
-        xAxes: [{
-            display: false
-        }],
+        xAxes: [
+          {
+            type: "time",
+            time: {
+              displayFormats: {
+                hour: 'H',
+              },
+              stepSize: 4,
+            },
+            display: true,
+            scaleLabel: {
+              display: true,
+              labelString: 'Date'
+            },
+            gridLines: {
+                color: "rgba(128, 128, 128, 0.25)",
+            }
+          }
+        ],
         yAxes: [  
           {
             id: 'rain',
