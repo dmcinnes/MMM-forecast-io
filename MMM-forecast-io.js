@@ -3,7 +3,7 @@ Module.register("MMM-forecast-io", {
   defaults: {
     apiKey: "",
     apiBase: "https://api.darksky.net/forecast",
-    units: config.units,
+    units: this.config.units,
     language: config.language,
     updateInterval: 6 * 60 * 1000, // every 5 minutes
     animationSpeed: 1000,
@@ -20,11 +20,9 @@ Module.register("MMM-forecast-io", {
     showForecast: true,
     showPrecipitationGraph: true,
     precipitationGraphWidth: 400,
+    precipitationGraphHeight: 400 * 0.3,
     showWind: true,
     showSunrise: true,
-    width: 400,
-    height: 200,
-
     unitTable: {
       'default':  'auto',
       'metric':   'si',
@@ -45,7 +43,6 @@ Module.register("MMM-forecast-io", {
       'thunderstorm':        'wi-thunderstorm',
       'tornado':             'wi-tornado'
     },
-
     debug: false
   },
 
@@ -215,6 +212,8 @@ Module.register("MMM-forecast-io", {
       // Some German Phrases fro Darksky are somwhat "fancy". They need some replacement
       var mapObj = {
         "am am":"am",
+        "von am": "vom",
+        "am heute": "heute",
       };
 
       var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
@@ -230,7 +229,6 @@ Module.register("MMM-forecast-io", {
 // ======== precip graph and forecast table
     if (this.config.showPrecipitationGraph) {
       wrapper.appendChild(this.renderSVGPrecipitationGraph());
-      // wrapper.appendChild(this.renderPrecipitationGraph());
     }
     if (this.config.showForecast) {
       wrapper.appendChild(this.renderWeatherForecast());
@@ -241,10 +239,10 @@ Module.register("MMM-forecast-io", {
 
   renderSVGPrecipitationGraph: function () {
     var width = this.config.precipitationGraphWidth; 
-    var height = Math.round(width * 0.3);            // 120 by default
+    var height = this.config.precipitationGraphWidth * 0.5;            // 120 by default
 
     const wrapperEl = document.createElement("div");
-    wrapperEl.setAttribute("style", "position: relative; display: inline-block; width: 100%");
+    wrapperEl.setAttribute("style", "position: relative; display: inline-block; width: " + width + "px;height: " + height + "px");
 
     // Create chart canvas
     var chartEl  = document.createElement("canvas");
@@ -350,7 +348,7 @@ Module.register("MMM-forecast-io", {
             },
             display: true,
             scaleLabel: {
-              display: true,
+              display: false,
               labelString: 'Date'
             },
             gridLines: {
@@ -406,194 +404,6 @@ Module.register("MMM-forecast-io", {
     return wrapperEl;
   },
 
-  renderPrecipitationGraph: function () {
-    var i;
-    var width = this.config.precipitationGraphWidth; 
-    var height = Math.round(width * 0.3);            // 120 by default
-    var element = document.createElement('canvas');
-    element.className = "precipitation-graph";
-    element.width  = width;
-    element.height = height;
-    var context = element.getContext('2d');
-
-    tempMin = 1000;  // 0..120 range, thus graph -10 to 110 degrees
-    tempMax = -1000;
-
-    for (i = 0; i < (24+12+1); i++) {
-      if (this.weatherData.hourly.data[i].temperature < tempMin) {
-        tempMin = this.weatherData.hourly.data[i].temperature;
-      }
-      if (this.weatherData.hourly.data[i].temperature > tempMax) {
-        tempMax = this.weatherData.hourly.data[i].temperature;
-      }
-    }
-
-    precipitationGraphMin = tempMin;
-    precipitationGraphMax = tempMax;
-
-    Delta = Math.max(30, (precipitationGraphMax - precipitationGraphMin))
-    precipitationGraphMin -= Delta * 0.2;
-    precipitationGraphMax += Delta * 0.2;
-
-    var pixelPerDegree = Math.round( height / (precipitationGraphMax - precipitationGraphMin) );
-    var pixelPerHour = (width / (24+12) );    // pixels per hour for 1.5 days
-
-// ======= shade blocks for daylight hours
-    var now = new Date();
-    now = Math.floor(now / 1000);    // current time in Unix format
-    var timeUntilSunrise;
-    var timeUntilSunset;
-    var sunrisePixels;    // daytime shade box location on graph
-    var sunsetPixels;
-
-    context.save();
-    for (i = 0; i < 3; i++) {                // 3 days ([0]..[2])
-      timeUntilSunrise = (this.weatherData.daily.data[i].sunriseTime - now);
-      timeUntilSunset  = (this.weatherData.daily.data[i].sunsetTime - now);
-
-      if ((timeUntilSunrise < 0) && (i == 0)) {     
-        timeUntilSunrise = 0;       // sunrise has happened already today
-      }
-      if ((timeUntilSunset < 0) && (i == 0)) {     
-        timeUntilSunset = 0;        // sunset has happened already today
-      }
-
-      sunrisePixels = (timeUntilSunrise/60/60)*pixelPerHour;
-      sunsetPixels  = (timeUntilSunset/60/60)*pixelPerHour;
-
-      context.fillStyle = "#323232";
-      context.fillRect(sunrisePixels, 0, (sunsetPixels-sunrisePixels), height);
-    }
-    context.restore();
-
-// ===== 6hr tick lines
-    var tickCount = Math.round(width / (pixelPerHour*6));
-    context.save();
-    context.strokeStyle = 'gray';
-    context.lineWidth = 2;
-    for (i = 1; i < tickCount; i++) {             
-      context.moveTo(i * (pixelPerHour*6), height);
-      context.lineTo(i * (pixelPerHour*6), height - 7);
-      context.stroke();
-    }
-    context.restore();
-
-    // ====== freezing and hot lines
-    if (this.config.units = "metric") {
-      i = 25;       // ========== hot line, at 80 degrees
-    } else {
-      i = 80;
-    }
-
-    context.save();
-    context.beginPath();
-    context.setLineDash([5, 10]);
-    context.lineWidth = 1;
-    context.strokeStyle = 'red';
-    context.moveTo(0, height - ( i - precipitationGraphMin) * pixelPerDegree);
-    context.lineTo(width, height - ( i - precipitationGraphMin) * pixelPerDegree );
-    context.stroke();
-
-    if (this.config.units = "metric") {
-      i = 0;         // ====== freezing line 
-    } else {
-      i = 32;
-    }
-
-    context.beginPath();
-    context.strokeStyle = 'blue';
-    context.moveTo(0, height - (i - precipitationGraphMin) * pixelPerDegree);
-    context.lineTo(width, height - (i - precipitationGraphMin) * pixelPerDegree);
-    context.stroke();
-    context.restore();
-
-// ====== graph of precipIntensity  (inches of liquid water per hour)
-    var data = this.weatherData.hourly.data;
-
-    context.save();
-    context.strokeStyle = 'blue';
-    context.fillStyle = 'blue';
-    //context.globalCompositeOperation = 'xor';
-    context.beginPath();
-    context.moveTo(0, height);
-    var intensity;
-    for (i = 0; i < data.length; i++) {
-      intensity = 0;
-      if (data[i].precipIntensity > 0) {
-        intensity = (data[i].precipIntensity * height * 0.2) + 4;   // make trace stand out
-      }
-      context.lineTo(i * pixelPerHour, height - intensity);
-    }
-    context.lineTo(width, height);
-    context.closePath();
-    context.fill();
-    context.restore();
-
-
-// ========= graph of temp
-    var numMins = 60 * 24 * 1.5;     // minutes in graph, 1.5 days
-    var tempTemp;
-
-    context.save();
-    context.strokeStyle = '#fff';
-    context.lineWidth = 2;
-    context.moveTo(0, height);
-
-    var tempX;
-    var tempY;
-
-    for (i = 0; i < (24+12+1); i++) {
-      tempX = i * pixelPerHour;
-      tempY = height - (this.weatherData.hourly.data[i].temperature - precipitationGraphMin) * pixelPerDegree;
-
-      context.lineTo( tempX, tempY );       // line from last hour to this hour
-      context.stroke();
-
-      context.beginPath();
-      context.arc(tempX, tempY, 2.5 ,0,2*Math.PI);          // hour-dots
-      context.stroke();
-    }
-    context.restore();
-
-
-    var timeLabel;
-    for (i = 0; i < (24+12+1); i++) {     // text label for temperature on graph
-        
-      if (this.weatherData.hourly.data[i].temperature == tempMin || 
-          this.weatherData.hourly.data[i].temperature == tempMax) {
-
-        tempX = (i * pixelPerHour) - 8;
-        tempY = height - (this.weatherData.hourly.data[i].temperature - precipitationGraphMin) * pixelPerDegree;
-
-        if (this.weatherData.hourly.data[i].temperature == tempMin ) {
-          tempY += 20;
-        } else {
-          tempY -= 10;
-        }
-
-
-        tempTemp = Math.round( this.weatherData.hourly.data[i].temperature );
-
-        context.beginPath();
-        context.font = "15px Arial";
-        context.fillStyle = "white";
-        context.fillText( tempTemp, tempX, tempY );
-        context.stroke();
-
-
-//        timeLabel = this.weatherData.hourly.data[i].time;
-//        timeLabel = moment(timeLabel*1000).format("ha");
-//        timeLabel = timeLabel.replace("m", " ");
-//        context.beginPath();
-//        context.font = "10px Arial";
-//        context.fillStyle = "grey";
-//        context.fillText( timeLabel , tempX, 10 );
-//        context.stroke();
-      }
-    }
-
-    return element;
-  },
 
   getDayFromTime: function (time) {
     var dt = new Date(time * 1000);

@@ -140,7 +140,13 @@ modules: [
     </tr>
     <tr>
       <td><code>precipitationGraphWidth</code></td>
-      <td>Width of the precipitation graph element in pixels. Scales height to 30 percent of width automatically.<br>
+      <td>Width of the precipitation graph element in pixels.<br>
+        <br><b>Default value:</b>  <code>400</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>precipitationGraphHeight</code></td>
+      <td>Height of the precipitation graph element in pixels.<br>
         <br><b>Default value:</b>  <code>400</code>
       </td>
     </tr>
