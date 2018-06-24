@@ -1,0 +1,10 @@
+{
+  "name": "MMM-forecast-io",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chart.js": "^2.7.0"
+  }
+}

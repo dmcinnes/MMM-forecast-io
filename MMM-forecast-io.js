@@ -3,9 +3,9 @@ Module.register("MMM-forecast-io", {
   defaults: {
     apiKey: "",
     apiBase: "https://api.darksky.net/forecast",
-    units: config.units,
+    units: this.config.units,
     language: config.language,
-    updateInterval: 5 * 60 * 1000, // every 5 minutes
+    updateInterval: 6 * 60 * 1000, // every 5 minutes
     animationSpeed: 1000,
     initialLoadDelay: 0, // 0 seconds delay
     retryDelay: 2500,
@@ -16,14 +16,13 @@ Module.register("MMM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
+    showSummary: true,
     showForecast: true,
-    maxDaysForecast: 7,   // maximum number of days to show in forecast
-    enablePrecipitationGraph: true,
-    alwaysShowPrecipitationGraph: false,
+    showPrecipitationGraph: true,
     precipitationGraphWidth: 400,
-    precipitationFillColor: 'white',
-    precipitationProbabilityThreshold: 0.1,
-    precipitationIntensityScaleTop: 0.2,
+    precipitationGraphHeight: 400 * 0.3,
+    showWind: true,
+    showSunrise: true,
     unitTable: {
       'default':  'auto',
       'metric':   'si',
@@ -34,8 +33,8 @@ Module.register("MMM-forecast-io", {
       'clear-night':         'wi-night-clear',
       'rain':                'wi-rain',
       'snow':                'wi-snow',
-      'sleet':               'wi-rain-mix',
-      'wind':                'wi-cloudy-gusts',
+        'sleet':               'wi-rain-mix',
+        'wind':                'wi-cloudy-gusts',
       'fog':                 'wi-fog',
       'cloudy':              'wi-cloudy',
       'partly-cloudy-day':   'wi-day-cloudy',
@@ -44,7 +43,6 @@ Module.register("MMM-forecast-io", {
       'thunderstorm':        'wi-thunderstorm',
       'tornado':             'wi-tornado'
     },
-
     debug: false
   },
 
@@ -55,7 +53,8 @@ Module.register("MMM-forecast-io", {
   getScripts: function () {
     return [
       'jsonp.js',
-      'moment.js'
+      'moment.js',
+      "modules/" + this.name + "/node_modules/chart.js/dist/Chart.bundle.min.js",
     ];
   },
 
@@ -70,11 +69,6 @@ Module.register("MMM-forecast-io", {
 
   start: function () {
     Log.info("Starting module: " + this.name);
-
-    // still accept the old config
-    if (this.config.hasOwnProperty("showPrecipitationGraph")) {
-      this.config.enablePrecipitationGraph = this.config.showPrecipitationGraph;
-    }
 
     if (this.shouldLookupGeolocation()) {
       this.getLocation();
@@ -152,12 +146,14 @@ Module.register("MMM-forecast-io", {
     var currentWeather = this.weatherData.currently;
     var hourly         = this.weatherData.hourly;
     var minutely       = this.weatherData.minutely;
+    var daily          = this.weatherData.daily;
 
+//========== Current large icon & Temp
     var large = document.createElement("div");
     large.className = "large light";
 
-    var icon = currentWeather ? currentWeather.icon : hourly.icon;
-    var iconClass = this.config.iconTable[icon];
+    var icon = minutely ? minutely.icon : hourly.icon;
+    var iconClass = this.config.iconTable[hourly.icon];
     var icon = document.createElement("span");
     icon.className = 'big-icon wi ' + iconClass;
     large.appendChild(icon);
@@ -167,20 +163,73 @@ Module.register("MMM-forecast-io", {
     temperature.innerHTML = " " + this.temp + "&deg;";
     large.appendChild(temperature);
 
-    var summaryText = minutely ? minutely.summary : hourly.summary;
-    var summary = document.createElement("div");
-    summary.className = "small dimmed summary";
-    summary.innerHTML = summaryText;
+// ====== wind 
+    if (this.config.showWind) {
+      var padding = document.createElement("span");
+      padding.className = "dim";
+      padding.innerHTML = " &nbsp &nbsp ";
+      large.appendChild(padding);
 
-    wrapper.appendChild(large);
-    wrapper.appendChild(summary);
+      var windicon = document.createElement("span");
+      windicon.className = 'big-icon wi wi-strong-wind xdimmed';
+      large.appendChild(windicon);
 
-    if (this.config.alwaysShowPrecipitationGraph ||
-        (this.config.enablePrecipitationGraph &&
-         this.isAnyPrecipitation(minutely))) {
-      wrapper.appendChild(this.renderPrecipitationGraph());
+      var wind = document.createElement("span");
+      wind.className = "dim";
+      wind.innerHTML = " " + Math.round(this.weatherData.currently.windSpeed) + " ";
+      large.appendChild(wind);
     }
 
+//========== sunrise/sunset
+    if (this.config.showSunrise) {
+      var midText = document.createElement("div");
+      midText.className = "light";
+
+      var today      = this.weatherData.daily.data[0];
+      var now        = new Date();
+
+      //if (today.sunriseTime*1000 < now && today.sunsetTime*1000 > now) {
+        var sunrise = new moment.unix(today.sunriseTime).format( "H:mm" );
+        sunString = '<span class="wi wi-sunrise xdimmed"></span> ' + sunrise;
+        var sunset = new moment.unix(today.sunsetTime).format( "H:mm" );
+        sunString += ' <span class="wi wi-sunset xdimmed"></span> '  + sunset;
+      //} else {
+      //}
+
+      var sunTime = document.createElement("div");
+      sunTime.className = "small dimmed summary";
+      sunTime.innerHTML = sunString;
+      large.appendChild(sunTime);
+    }
+    wrapper.appendChild(large);
+
+// =========  summary text
+    if (this.config.showSummary) {
+      var summaryText = minutely ? minutely.summary : hourly.summary;
+      var summary = document.createElement("div");
+      summary.className = "small dimmed summary";
+
+      // Some German Phrases fro Darksky are somwhat "fancy". They need some replacement
+      var mapObj = {
+        "am am":"am",
+        "von am": "vom",
+        "am heute": "heute",
+      };
+
+      var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+      summaryText = summaryText.replace(re, function(matched){
+        return mapObj[matched];
+      });
+
+      summary.innerHTML =  summaryText;
+      wrapper.appendChild(summary);
+    }
+
+
+// ======== precip graph and forecast table
+    if (this.config.showPrecipitationGraph) {
+      wrapper.appendChild(this.renderSVGPrecipitationGraph());
+    }
     if (this.config.showForecast) {
       wrapper.appendChild(this.renderWeatherForecast());
     }
@@ -188,89 +237,173 @@ Module.register("MMM-forecast-io", {
     return wrapper;
   },
 
-  isAnyPrecipitation: function (minutely) {
-    if (!minutely) {
-      return false;
-    }
-    var data = this.weatherData.minutely.data;
-    var threshold = this.config.precipitationProbabilityThreshold;
-    for (i = 0; i < data.length; i++) {
-      if (data[i].precipProbability > threshold) {
-        return true;
+  renderSVGPrecipitationGraph: function () {
+    var width = this.config.precipitationGraphWidth; 
+    var height = this.config.precipitationGraphWidth * 0.5;            // 120 by default
+
+    const wrapperEl = document.createElement("div");
+    wrapperEl.setAttribute("style", "position: relative; display: inline-block; width: " + width + "px;height: " + height + "px");
+
+    // Create chart canvas
+    var chartEl  = document.createElement("canvas");
+    var ctx = chartEl.getContext("2d");
+
+    var dataTempLine = [];
+    var dataTempDots = [];
+    var dataRain = [];
+    var labels   = [];
+
+    var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+
+    for (i = 0; i < (36+1); i += 1) {
+      dataTempLine.push({ x: moment.unix(this.weatherData.hourly.data[i].time).format("YYYY-MM-DD HH:MM"), y: this.weatherData.hourly.data[i].temperature });
+      if (i % 2 == 0) {
+        dataTempDots.push({ x: moment.unix(this.weatherData.hourly.data[i].time).format("YYYY-MM-DD HH:MM"), y: this.weatherData.hourly.data[i].temperature });
       }
-    }
-    return false;
-  },
-
-  renderPrecipitationGraph: function () {
-    var i;
-    var width = this.config.precipitationGraphWidth;
-    var height = Math.round(width * 0.3);
-    var element = document.createElement('canvas');
-    element.className = "precipitation-graph";
-    element.width  = width;
-    element.height = height;
-    var context = element.getContext('2d');
-
-    var sixth = Math.round(width / 6);
-    context.save();
-    context.strokeStyle = 'gray';
-    context.lineWidth = 2;
-    for (i = 1; i < 6; i++) {
-      context.moveTo(i * sixth, height);
-      context.lineTo(i * sixth, height - 10);
-      context.stroke();
-    }
-    context.restore();
-
-    var third = Math.round(height / 3);
-    context.save();
-    context.strokeStyle = 'gray';
-    context.setLineDash([5, 15]);
-    context.lineWidth = 1;
-    for (i = 1; i < 3; i++) {
-      context.moveTo(0, i * third);
-      context.lineTo(width, i * third);
-      context.stroke();
-    }
-    context.restore();
-
-    var data = this.weatherData.minutely.data;
-    var stepSize = Math.round(width / data.length);
-    context.save();
-    context.strokeStyle = 'white';
-    context.fillStyle = this.config.precipitationFillColor;
-    context.globalCompositeOperation = 'xor';
-    context.beginPath();
-    context.moveTo(0, height);
-    var threshold = this.config.precipitationProbabilityThreshold;
-    var intensity;
-
-    // figure out how we're going to scale our graph
-    var maxIntensity = 0;
-    for (i = 0; i < data.length; i++) {
-      maxIntensity = Math.max(maxIntensity, data[i].precipIntensity);
-    }
-    // if current intensity is above our normal scale top, make that the top
-    if (maxIntensity < this.config.precipitationIntensityScaleTop) {
-      maxIntensity = this.config.precipitationIntensityScaleTop;
-    }
-
-    for (i = 0; i < data.length; i++) {
-      if (data[i].precipProbability < threshold) {
-        intensity = 0;
+      // dataRain.push({ x: moment.unix(this.weatherData.hourly.data[i].time).format("YYYY-MM-DD HH:MM"), y: this.weatherData.hourly.data[i].precipIntensity });
+      if (this.weatherData.hourly.data[i].precipIntensity > 0) { 
+        rain = this.weatherData.hourly.data[i].precipIntensity 
       } else {
-        intensity = height * (data[i].precipIntensity / maxIntensity);
+        rain = null
       }
-      context.lineTo(i * stepSize, height - intensity);
+      dataRain.push({ 
+        x: moment.unix(this.weatherData.hourly.data[i].time).format("YYYY-MM-DD HH:MM"), 
+        y: rain
+      });
     }
-    context.lineTo(width, height);
-    context.closePath();
-    context.fill();
-    context.restore();
 
-    return element;
+    // Log.log('dataTempLine', dataTempLine);     
+
+  var gradientRain = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientRain.addColorStop(0, 'rgba(0, 0, 255, 1)');   
+  gradientRain.addColorStop(0.75, 'rgba(0, 0, 255, 0)');
+  
+  var gradientTemperature = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientTemperature.addColorStop(0, 'rgba(255, 0, 0, 1)');   
+  gradientTemperature.addColorStop(0.5, 'rgba(255, 0, 0, 0)');
+
+    var data = {
+      // labels: labels,
+      datasets: [
+        {
+          label: "Regenmenge",
+          fill: true,
+          lineTension: 0.1,
+          backgroundColor: gradientRain,
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderCapStyle: 'butt',
+          borderDash: [],
+          borderDashOffset: 0.0,
+          data: dataRain,
+          yAxisID: 'rain',
+          pointRadius: 0,
+          spanGaps: true,
+        },
+        {
+          label: "Temperatur Dots",
+          fill: false,
+          lineTension: 0.0,
+          borderColor: "rgba(255, 99, 132, 1)", // The main line color
+          borderCapStyle: 'square',
+          borderDash: [], // try [5, 15] for instance
+          borderDashOffset: 0.0,
+          pointBackgroundColor: "black",
+          pointBorderWidth: 3,
+          pointRadius: 4,
+          showLine: false,
+          // notice the gap in the data and the spanGaps: true
+          data: dataTempDots,
+          yAxisID: 'temperature',
+        },
+        {
+          label: "Temperatur Linie",
+          fill: true,
+          lineTension: 0.1,
+          backgroundColor: gradientTemperature,
+          borderColor: "rgba(255, 99, 132, 1)", // The main line color
+          borderCapStyle: 'square',
+          borderDash: [], // try [5, 15] for instance
+          borderDashOffset: 0.0,
+          pointBackgroundColor: "black",
+          pointBorderWidth: 3,
+          pointRadius: 0,
+          // notice the gap in the data and the spanGaps: true
+          data: dataTempLine,
+          yAxisID: 'temperature',
+        },
+      ]
+    };
+
+    // Notice the scaleLabel at the same level as Ticks
+    var options = {
+      scales: {
+        xAxes: [
+          {
+            type: "time",
+            time: {
+              displayFormats: {
+                hour: 'H',
+              },
+              stepSize: 4,
+            },
+            display: true,
+            scaleLabel: {
+              display: false,
+              labelString: 'Date'
+            },
+            gridLines: {
+                color: "rgba(128, 128, 128, 0.25)",
+            }
+          }
+        ],
+        yAxes: [  
+          {
+            id: 'rain',
+            position: 'right',
+            ticks: {
+              suggestedMin: 0,
+              suggestedMax: 2,
+              fontColor: "blue",
+              stepSize: 1,
+            },
+          },
+          {
+            id: 'temperature',
+            position: 'left',
+            ticks: {
+              suggestedMin: 10,
+              suggestedMax: 30,
+              fontColor: "red",
+              stepSize: 5,
+            },
+            gridLines: {
+                color: "rgba(128, 128, 128, 0.25)",
+            }
+          },
+        ],
+      },
+      tooltips: {
+       enabled: false
+      },
+      legend: {
+        display: false
+      }
+    };
+
+    // Init chart.js
+    this.chart = new Chart(ctx, {
+      type: 'line',
+      data: data,
+      options: options
+    });
+
+
+    // Append chart
+    wrapperEl.appendChild(chartEl);
+
+    return wrapperEl;
   },
+
 
   getDayFromTime: function (time) {
     var dt = new Date(time * 1000);
@@ -282,6 +415,7 @@ Module.register("MMM-forecast-io", {
     var interval = 100 / total;
     var rowMinTemp = this.roundTemp(data.temperatureMin);
     var rowMaxTemp = this.roundTemp(data.temperatureMax);
+    var precipProbability = Math.round(data.precipProbability*100.0);
 
     var row = document.createElement("tr");
     row.className = "forecast-row";
@@ -292,6 +426,8 @@ Module.register("MMM-forecast-io", {
     var iconClass = this.config.iconTable[data.icon];
     var icon = document.createElement("span");
     icon.className = 'wi weathericon ' + iconClass;
+
+    // Temperature Bars
 
     var forecastBar = document.createElement("div");
     forecastBar.className = "forecast-bar";
@@ -322,17 +458,48 @@ Module.register("MMM-forecast-io", {
     forecastBar.appendChild(rightSpacer);
 
     var forecastBarWrapper = document.createElement("td");
+    forecastBarWrapper.className = "temperature-column";
     forecastBarWrapper.appendChild(forecastBar);
+
+    // Rain Probability Bars
+
+    var rainBar = document.createElement("div");
+    rainBar.className = "forecast-rain";
+
+    var rain = document.createElement("span");
+    if (precipProbability > 0) {rain.innerHTML = precipProbability + "%"; } else {rain.innerHTML = "&nbsp;";}
+    rain.className = "rain probability";
+
+    var probabilitySpacer = document.createElement("span");
+    probabilitySpacer.style.width = (100 - precipProbability) + "%";
+
+
+    rainBar.appendChild(probabilitySpacer);
+    rainBar.appendChild(rain);
+
+    if (precipProbability > 0) {
+      var probabilityBar = document.createElement("span");
+      probabilityBar.className = "rain-bar";
+      probabilityBar.innerHTML = "";
+      probabilityBar.style.width = precipProbability + "%";
+      rainBar.appendChild(probabilityBar);
+    }
+
+
+    var rainBarWrapper = document.createElement("td");
+    
+    rainBarWrapper.appendChild(rainBar);
 
     row.appendChild(dayTextSpan);
     row.appendChild(icon);
     row.appendChild(forecastBarWrapper);
+    row.appendChild(rainBarWrapper);
 
     return row;
   },
 
   renderWeatherForecast: function () {
-    var numDays =  this.config.maxDaysForecast;
+    var numDays =  7;
     var i;
 
     var filteredDays =
@@ -346,7 +513,7 @@ Module.register("MMM-forecast-io", {
       max = Math.max(max, day.temperatureMax);
     }
     min = Math.round(min);
-    max = Math.round(max);
+    max = Math.round(max);        // this week's min & max, for graph scaling
 
     var display = document.createElement("table");
     display.className = "forecast";

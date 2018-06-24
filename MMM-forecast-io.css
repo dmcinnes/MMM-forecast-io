@@ -32,6 +32,21 @@
   text-align: left;
   padding-right: 0.2em;
 }
+
+.MMM-forecast-io .forecast-row .forecast-day {
+}
+
+.MMM-forecast-io .forecast-row .weather-icon {
+}
+
+.MMM-forecast-io .forecast-row .forecast-bar {
+}
+
+.MMM-forecast-io .forecast-row .temperature-column {
+}
+
+
+
 .MMM-forecast-io .forecast-row .weathericon {
   text-align: center;
   padding-right: 0.5em;
@@ -42,16 +57,39 @@
   overflow: hidden;
 }
 
+.MMM-forecast-io. .temperature-column {
+}
+
 .MMM-forecast-io .forecast-bar>span {
   display: table-cell;
   text-align: center;
 }
 
 .MMM-forecast-io .forecast-bar .bar {
-  background-color: #aaa;
+/*  background-color: #aaa; */
+  background: linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,0.75));
   line-height: 0.8em;
   border-radius: 1em;
   border: 0.5ex transparent solid;
+  background-clip: padding-box;
+  color: black;
+}
+
+.MMM-forecast-io .forecast-rain {
+  display: table;
+  overflow: hidden;
+}
+
+.MMM-forecast-io .forecast-rain>span {
+  display: table-cell;
+  text-align: center;
+}
+.MMM-forecast-io .forecast-rain .rain-bar {
+  background: linear-gradient(to right, rgba(0,0,255,0.75), rgba(0,0,255,0));
+  line-height: 0.8em;
+  border-top-left-radius: 1em;
+  border-bottom-left-radius: 1em;
+  border: 0.0ex black solid;
   background-clip: padding-box;
   color: black;
 }
@@ -60,10 +98,13 @@
   border: 1px solid #aaa;
   margin-top: 1ex;
 }
-
+.MMM-forecast-io .rain-bar {
+  min-width: 5px;
+}
+/*
 .small.MMM-forecast-io .forecast {
   min-width: 200px;
-  max-width: 300px;
+  max-width: 300px; 
 }
 
 .small.MMM-forecast-io .summary {
@@ -73,3 +114,5 @@
 .small.MMM-forecast-io .precipitation-graph {
   width: 300px;
 }
+
+*/
