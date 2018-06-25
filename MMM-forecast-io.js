@@ -5,6 +5,7 @@ Module.register("MMM-forecast-io", {
     apiBase: "https://api.darksky.net/forecast",
     units: config.units,
     language: config.language,
+    showIndoorTemperature: false,
     updateInterval: 5 * 60 * 1000, // every 5 minutes
     animationSpeed: 1000,
     initialLoadDelay: 0, // 0 seconds delay
@@ -93,7 +94,7 @@ Module.register("MMM-forecast-io", {
 
     var units = this.config.unitTable[this.config.units] || 'auto';
 
-    var url = this.config.apiBase+'/'+this.config.apiKey+'/'+this.config.latitude+','+this.config.longitude+'?units='+units+'&lang='+this.config.language;
+    var url = this.config.apiBase + '/' + this.config.apiKey + '/' + this.config.latitude + ',' + this.config.longitude + '?units=' + units + '&lang=' + this.config.language;
     if (this.config.data) {
       // for debugging
       this.processWeather(this.config.data);
@@ -124,6 +125,12 @@ Module.register("MMM-forecast-io", {
   notificationReceived: function(notification, payload, sender) {
     switch(notification) {
       case "DOM_OBJECTS_CREATED":
+        break;
+      case "INDOOR_TEMPERATURE":
+        if (this.config.showIndoorTemperature) {
+          this.roomTemperature = payload;
+          this.updateDom(this.config.animationSpeed);
+        }
         break;
     }
   },
@@ -166,6 +173,17 @@ Module.register("MMM-forecast-io", {
     temperature.className = "bright";
     temperature.innerHTML = " " + this.temp + "&deg;";
     large.appendChild(temperature);
+
+    if (this.roomTemperature !== undefined) {
+      var icon = document.createElement("span");
+      icon.className = 'fa fa-home';
+      large.appendChild(icon);
+
+      var temperature = document.createElement("span");
+      temperature.className = "bright";
+      temperature.innerHTML = " " + this.roomTemperature + "&deg;";
+      large.appendChild(temperature);
+    }
 
     var summaryText = minutely ? minutely.summary : hourly.summary;
     var summary = document.createElement("div");
@@ -306,7 +324,7 @@ Module.register("MMM-forecast-io", {
 
     var bar = document.createElement("span");
     bar.className = "bar";
-    bar.innerHTML = "&nbsp;"
+    bar.innerHTML = "&nbsp;";
     var barWidth = Math.round(interval * (rowMaxTemp - rowMinTemp));
     bar.style.width = barWidth + '%';
 
