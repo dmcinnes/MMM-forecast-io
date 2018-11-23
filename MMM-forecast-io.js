@@ -19,6 +19,7 @@ Module.register("MMM-forecast-io", {
     longitude: null,
     showForecast: true,
     maxDaysForecast: 7,   // maximum number of days to show in forecast
+    showSunriseSunset: true,
     enablePrecipitationGraph: true,
     alwaysShowPrecipitationGraph: false,
     precipitationGraphWidth: 400,
@@ -61,7 +62,7 @@ Module.register("MMM-forecast-io", {
   },
 
   getStyles: function () {
-    return ["weather-icons.css", "MMM-forecast-io.css"];
+    return ["weather-icons.css", "weather-icons-wind.css", "MMM-forecast-io.css"];
   },
 
   shouldLookupGeolocation: function () {
@@ -157,6 +158,7 @@ Module.register("MMM-forecast-io", {
     }
 
     var currentWeather = this.weatherData.currently;
+    var daily          = this.weatherData.daily;
     var hourly         = this.weatherData.hourly;
     var minutely       = this.weatherData.minutely;
 
@@ -185,6 +187,25 @@ Module.register("MMM-forecast-io", {
       large.appendChild(temperature);
     }
 
+    var sunriseSunset = document.createElement("div");
+    sunriseSunset.className = "small dimmed extras";
+
+    var sunriseIcon = document.createElement("span");
+    sunriseIcon.className = "wi wi-sunrise";
+    sunriseSunset.appendChild(sunriseIcon);
+
+    var sunriseTime = document.createElement("span");
+    sunriseTime.innerHTML = moment(new Date(daily.data[0].sunriseTime * 1000)).format("LT") + "&nbsp;";
+    sunriseSunset.appendChild(sunriseTime);
+
+    var sunsetIcon = document.createElement("span");
+    sunsetIcon.className = "wi wi-sunset";
+    sunriseSunset.appendChild(sunsetIcon);
+
+    var sunsetTime = document.createElement("span");
+    sunsetTime.innerHTML = moment(new Date(daily.data[0].sunsetTime * 1000)).format("LT");
+    sunriseSunset.appendChild(sunsetTime);
+    
     var summaryText = minutely ? minutely.summary : hourly.summary;
     var summary = document.createElement("div");
     summary.className = "small dimmed summary";
@@ -192,6 +213,10 @@ Module.register("MMM-forecast-io", {
 
     wrapper.appendChild(large);
     wrapper.appendChild(summary);
+ 
+    if (this.config.showSunriseSunset) {
+      wrapper.appendChild(sunriseSunset);
+    }
 
     if (this.config.alwaysShowPrecipitationGraph ||
         (this.config.enablePrecipitationGraph &&
