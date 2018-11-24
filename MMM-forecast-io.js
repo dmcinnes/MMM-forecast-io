@@ -19,6 +19,7 @@ Module.register("MMM-forecast-io", {
     longitude: null,
     showForecast: true,
     maxDaysForecast: 7,   // maximum number of days to show in forecast
+    showWind: true,
     enablePrecipitationGraph: true,
     alwaysShowPrecipitationGraph: false,
     precipitationGraphWidth: 400,
@@ -61,7 +62,7 @@ Module.register("MMM-forecast-io", {
   },
 
   getStyles: function () {
-    return ["weather-icons.css", "MMM-forecast-io.css"];
+    return ["weather-icons.css", "weather-icons-wind.css", "MMM-forecast-io.css"];
   },
 
   shouldLookupGeolocation: function () {
@@ -185,6 +186,23 @@ Module.register("MMM-forecast-io", {
       large.appendChild(temperature);
     }
 
+    var wind = document.createElement("div");
+    wind.className = "small dimmed wind";
+
+    var windBearing = document.createElement("span");
+    windBearing.className = "wi wi-wind from-" + Math.round(currentWeather.windBearing) + "-deg";
+    wind.appendChild(windBearing);
+
+    var windSpeed = document.createElement("span");
+    if (this.config.units === 'metric') {
+      var windSpeedUnit = "m/s";
+    } else {
+      var windSpeedUnit = "mph";
+    }
+    windSpeed.innerHTML = " " + Math.round(currentWeather.windSpeed) + windSpeedUnit;
+    windSpeed.appendChild
+    wind.appendChild(windSpeed);
+
     var summaryText = minutely ? minutely.summary : hourly.summary;
     var summary = document.createElement("div");
     summary.className = "small dimmed summary";
@@ -192,6 +210,10 @@ Module.register("MMM-forecast-io", {
 
     wrapper.appendChild(large);
     wrapper.appendChild(summary);
+
+    if (this.config.showWind) {
+      wrapper.appendChild(wind);
+    }
 
     if (this.config.alwaysShowPrecipitationGraph ||
         (this.config.enablePrecipitationGraph &&
