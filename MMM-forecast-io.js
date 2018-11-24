@@ -235,7 +235,6 @@ Module.register("MMM-forecast-io", {
     }
 
     windSpeed.innerHTML = " " + cardinalDirection + " " + Math.round(currentWeather.windSpeed) + "-" + Math.round(currentWeather.windGust) + windSpeedUnit;
-    windSpeed.appendChild
     wind.appendChild(windSpeed);
 
     var summaryText = minutely ? minutely.summary : hourly.summary;
