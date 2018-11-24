@@ -311,6 +311,14 @@ Module.register("MMM-forecast-io", {
     var icon = document.createElement("span");
     icon.className = 'wi weathericon ' + iconClass;
 
+    var dayPrecipProb = document.createElement("span");
+    dayPrecipProb.className = "forecast-precip-prob";
+    if (data.precipProbability > 0) {
+      dayPrecipProb.innerHTML = Math.round(data.precipProbability * 100) + "%";
+    } else {
+      dayPrecipProb.innerHTML = "&nbsp;";
+    }
+
     var forecastBar = document.createElement("div");
     forecastBar.className = "forecast-bar";
 
@@ -344,6 +352,7 @@ Module.register("MMM-forecast-io", {
 
     row.appendChild(dayTextSpan);
     row.appendChild(icon);
+    row.appendChild(dayPrecipProb);
     row.appendChild(forecastBarWrapper);
 
     return row;
