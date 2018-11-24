@@ -193,13 +193,49 @@ Module.register("MMM-forecast-io", {
     windBearing.className = "wi wi-wind from-" + Math.round(currentWeather.windBearing) + "-deg";
     wind.appendChild(windBearing);
 
+    if (currentWeather.windBearing > 348.75 && currentWeather.windBearing <= 11.25) {
+      var cardinalDirection = 'N';
+    } else if (currentWeather.windBearing > 11.25 && currentWeather.windBearing <= 33.75) {
+      var cardinalDirection = 'NNE';
+    } else if (currentWeather.windBearing > 33.75 && currentWeather.windBearing <= 56.25) {
+      var cardinalDirection = 'NE';
+    } else if (currentWeather.windBearing > 56.25 && currentWeather.windBearing <= 78.75) {
+      var cardinalDirection = 'NE';
+    } else if (currentWeather.windBearing > 78.75 && currentWeather.windBearing <= 101.25) {
+      var cardinalDirection = 'E';
+    } else if (currentWeather.windBearing > 101.25 && currentWeather.windBearing <= 123.75) {
+      var cardinalDirection = 'ESE';
+    } else if (currentWeather.windBearing > 123.75 && currentWeather.windBearing <= 146.25) {
+      var cardinalDirection = 'SE';
+    } else if (currentWeather.windBearing > 146.25 && currentWeather.windBearing <= 168.75) {
+      var cardinalDirection = 'SSE';
+    } else if (currentWeather.windBearing > 168.75 && currentWeather.windBearing <= 191.25) {
+      var cardinalDirection = 'S';
+    } else if (currentWeather.windBearing > 191.25 && currentWeather.windBearing <= 213.75) {
+      var cardinalDirection = 'SSW';
+    } else if (currentWeather.windBearing > 213.75 && currentWeather.windBearing <= 236.25) {
+      var cardinalDirection = 'SW';
+    } else if (currentWeather.windBearing > 236.25 && currentWeather.windBearing <= 258.75) {
+      var cardinalDirection = 'WSW';
+    } else if (currentWeather.windBearing > 258.75 && currentWeather.windBearing <= 281.25) {
+      var cardinalDirection = 'W';
+    } else if (currentWeather.windBearing > 281.25 && currentWeather.windBearing <= 303.75) {
+      var cardinalDirection = 'WNW';
+    } else if (currentWeater.windBearing > 303.75 && currentWeather.windBearing <= 326.25) {
+      var cardinalDirection = 'NW';
+    } else if (currentWeater.windBearing > 326.25 && currentWeather.windBearing <= 348.75) {
+      var cardinalDirection = 'NNW';
+    }
+
     var windSpeed = document.createElement("span");
     if (this.config.units === 'metric') {
       var windSpeedUnit = "m/s";
     } else {
       var windSpeedUnit = "mph";
     }
-    windSpeed.innerHTML = " " + Math.round(currentWeather.windSpeed) + windSpeedUnit;
+
+    console.log(currentWeather);
+    windSpeed.innerHTML = " " + cardinalDirection + " " + Math.round(currentWeather.windSpeed) + "-" + Math.round(currentWeather.windGust) + windSpeedUnit;
     windSpeed.appendChild
     wind.appendChild(windSpeed);
 
