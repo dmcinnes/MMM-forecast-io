@@ -18,6 +18,7 @@ Module.register("MMM-forecast-io", {
     latitude:  null,
     longitude: null,
     showForecast: true,
+    forecastTableFontSize: 'medium',
     maxDaysForecast: 7,   // maximum number of days to show in forecast
     enablePrecipitationGraph: true,
     alwaysShowPrecipitationGraph: false,
@@ -367,7 +368,7 @@ Module.register("MMM-forecast-io", {
     max = Math.round(max);
 
     var display = document.createElement("table");
-    display.className = "forecast";
+    display.className = this.config.forecastTableFontSize + " forecast";
     for (i = 0; i < filteredDays.length; i++) {
       var day = filteredDays[i];
       var row = this.renderForecastRow(day, min, max);
