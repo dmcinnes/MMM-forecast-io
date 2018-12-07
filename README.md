@@ -155,6 +155,12 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>showDailyPrecipitationChance</code></td>
+      <td>Toggles display of the precipitation probability for each day.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>iconTable</code></td>
       <td>The conversion table to convert the weather conditions to weather-icons.<br>
         <br><b>Default value:</b><pre>iconTable: {

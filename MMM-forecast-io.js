@@ -21,6 +21,7 @@ Module.register("MMM-forecast-io", {
     maxDaysForecast: 7,   // maximum number of days to show in forecast
     enablePrecipitationGraph: true,
     alwaysShowPrecipitationGraph: false,
+    showDailyPrecipitationChance: true,
     precipitationGraphWidth: 400,
     precipitationFillColor: 'white',
     precipitationProbabilityThreshold: 0.1,
@@ -352,7 +353,9 @@ Module.register("MMM-forecast-io", {
 
     row.appendChild(dayTextSpan);
     row.appendChild(icon);
-    row.appendChild(dayPrecipProb);
+    if (this.config.showDailyPrecipitationChance) {
+      row.appendChild(dayPrecipProb);
+    }
     row.appendChild(forecastBarWrapper);
 
     return row;
