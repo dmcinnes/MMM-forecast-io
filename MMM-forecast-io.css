@@ -73,3 +73,7 @@
 .small.MMM-forecast-io .precipitation-graph {
   width: 300px;
 }
+
+.MMM-forecast-io .sunrise-sunset span{
+  padding-right: 0.3em;
+}

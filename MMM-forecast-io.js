@@ -188,7 +188,7 @@ Module.register("MMM-forecast-io", {
     }
 
     var sunriseSunset = document.createElement("div");
-    sunriseSunset.className = "small dimmed extras";
+    sunriseSunset.className = "small dimmed sunrise-sunset";
 
     var sunriseIcon = document.createElement("span");
     sunriseIcon.className = "wi wi-sunrise";
