@@ -74,6 +74,7 @@
   width: 300px;
 }
 
-.MMM-forecast-io .sunrise-sunset span{
+.MMM-forecast-io .sunrise-sunset > span.wi {
   padding-right: 0.3em;
+  padding-left: 0.3em;
 }
