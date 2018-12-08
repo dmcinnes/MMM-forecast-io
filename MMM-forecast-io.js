@@ -193,39 +193,7 @@ Module.register("MMM-forecast-io", {
     windBearing.className = "wi wi-wind from-" + Math.round(currentWeather.windBearing) + "-deg";
     wind.appendChild(windBearing);
 
-    if (currentWeather.windBearing > 348.75 && currentWeather.windBearing <= 11.25) {
-      var cardinalDirection = this.translate('N');
-    } else if (currentWeather.windBearing > 11.25 && currentWeather.windBearing <= 33.75) {
-      var cardinalDirection = this.translate('NNE');
-    } else if (currentWeather.windBearing > 33.75 && currentWeather.windBearing <= 56.25) {
-      var cardinalDirection = this.translate('NE');
-    } else if (currentWeather.windBearing > 56.25 && currentWeather.windBearing <= 78.75) {
-      var cardinalDirection = this.translate('NE');
-    } else if (currentWeather.windBearing > 78.75 && currentWeather.windBearing <= 101.25) {
-      var cardinalDirection = this.translate('E');
-    } else if (currentWeather.windBearing > 101.25 && currentWeather.windBearing <= 123.75) {
-      var cardinalDirection = this.translate('ESE');
-    } else if (currentWeather.windBearing > 123.75 && currentWeather.windBearing <= 146.25) {
-      var cardinalDirection = this.translate('SE');
-    } else if (currentWeather.windBearing > 146.25 && currentWeather.windBearing <= 168.75) {
-      var cardinalDirection = this.translate('SSE');
-    } else if (currentWeather.windBearing > 168.75 && currentWeather.windBearing <= 191.25) {
-      var cardinalDirection = this.translate('S');
-    } else if (currentWeather.windBearing > 191.25 && currentWeather.windBearing <= 213.75) {
-      var cardinalDirection = this.translate('SSW');
-    } else if (currentWeather.windBearing > 213.75 && currentWeather.windBearing <= 236.25) {
-      var cardinalDirection = this.translate('SW');
-    } else if (currentWeather.windBearing > 236.25 && currentWeather.windBearing <= 258.75) {
-      var cardinalDirection = this.translate('WSW');
-    } else if (currentWeather.windBearing > 258.75 && currentWeather.windBearing <= 281.25) {
-      var cardinalDirection = this.translate('W');
-    } else if (currentWeather.windBearing > 281.25 && currentWeather.windBearing <= 303.75) {
-      var cardinalDirection = this.translate('WNW');
-    } else if (currentWeater.windBearing > 303.75 && currentWeather.windBearing <= 326.25) {
-      var cardinalDirection = this.translate('NW');
-    } else {
-      var cardinalDirection = this.translate('NNW');
-    }
+    var cardinalDirection = this.translate(this.degreeToCardinal(currentWeather.windBearing));
 
     var windSpeed = document.createElement("span");
     if (this.config.units === 'metric') {
@@ -462,6 +430,19 @@ Module.register("MMM-forecast-io", {
     temp /= scalar;
 
     return temp;
+  },
+
+// convert windBearing (which is technically a heading) into cardinal direction
+  degreeToCardinal: function (degree) {
+    // N repeated 2nd time for easier calculation of degrees between 348.75 and 359.99
+    var cardinalDirections = ['N', 'NNE', 'NE', 'ENE',
+                              'E', 'ESE', 'SE', 'SSE',
+                              'S', 'SSW', 'SW', 'WSW',
+                              'W', 'WNW', 'NW', 'NNW',
+                              'N'];
+    var index = Math.trunc((degree+11.25)/22.5);
+
+    return cardinalDirections[index];
   },
 
   scheduleUpdate: function(delay) {
