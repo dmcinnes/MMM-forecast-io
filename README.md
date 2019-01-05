@@ -124,6 +124,24 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>fadeForecast</code></td>
+      <td>Toggles fading of the last two forecast rows.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>showCurrentWeather</code></td>
+      <td>Toggles display of current weather (icon + temperature).<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>showTextSummary</code></td>
+      <td>Toggles display of weather text summary.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>enablePrecipitationGraph</code></td>
       <td>Toggles display of the precipitation graph.<br>
         <br><b>Default value:</b>  <code>true</code>
