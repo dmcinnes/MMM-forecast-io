@@ -62,7 +62,7 @@ Module.register("MMM-forecast-io", {
   },
 
   getStyles: function () {
-    return ["weather-icons.css", "MMM-forecast-io.css"];
+    return ["font-awesome.css", "weather-icons.css", "MMM-forecast-io.css"];
   },
 
   shouldLookupGeolocation: function () {
