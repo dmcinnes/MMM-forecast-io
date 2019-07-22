@@ -20,6 +20,7 @@ Module.register("MMM-forecast-io", {
     showForecast: true,
     forecastTableFontSize: 'medium',
     maxDaysForecast: 7,   // maximum number of days to show in forecast
+    showWind: true,
     showSunriseSunset: true,
     enablePrecipitationGraph: true,
     alwaysShowPrecipitationGraph: false,
@@ -64,7 +65,8 @@ Module.register("MMM-forecast-io", {
   },
 
   getStyles: function () {
-    return ["font-awesome.css", "weather-icons.css", "MMM-forecast-io.css"];
+    return ["weather-icons.css", "weather-icons-wind.css", "MMM-forecast-io.css"];
+    return ["font-awesome.css", "weather-icons.css", "weather-icons-wind.css", "MMM-forecast-io.css"];
   },
 
   shouldLookupGeolocation: function () {
@@ -189,6 +191,25 @@ Module.register("MMM-forecast-io", {
       large.appendChild(temperature);
     }
 
+    var wind = document.createElement("div");
+    wind.className = "small dimmed wind";
+
+    var windBearing = document.createElement("span");
+    windBearing.className = "wi wi-wind from-" + Math.round(currentWeather.windBearing) + "-deg";
+    wind.appendChild(windBearing);
+
+    var cardinalDirection = this.translate(this.degreeToCardinal(currentWeather.windBearing));
+
+    var windSpeed = document.createElement("span");
+    if (this.config.units === 'metric') {
+      var windSpeedUnit = "m/s";
+    } else {
+      var windSpeedUnit = "mph";
+    }
+
+    windSpeed.innerHTML = " " + cardinalDirection + " " + Math.round(currentWeather.windSpeed) + "-" + Math.round(currentWeather.windGust) + windSpeedUnit;
+    wind.appendChild(windSpeed);
+
     var sunriseSunset = document.createElement("div");
     sunriseSunset.className = "small dimmed sunrise-sunset";
 
@@ -218,6 +239,10 @@ Module.register("MMM-forecast-io", {
  
     if (this.config.showSunriseSunset) {
       wrapper.appendChild(sunriseSunset);
+    }
+
+    if (this.config.showWind) {
+      wrapper.appendChild(wind);
     }
 
     if (this.config.alwaysShowPrecipitationGraph ||
@@ -444,6 +469,19 @@ Module.register("MMM-forecast-io", {
     temp /= scalar;
 
     return temp;
+  },
+
+// convert windBearing (which is technically a heading) into cardinal direction
+  degreeToCardinal: function (degree) {
+    // N repeated 2nd time for easier calculation of degrees between 348.75 and 359.99
+    var cardinalDirections = ['N', 'NNE', 'NE', 'ENE',
+                              'E', 'ESE', 'SE', 'SSE',
+                              'S', 'SSW', 'SW', 'WSW',
+                              'W', 'WNW', 'NW', 'NNW',
+                              'N'];
+    var index = Math.trunc((degree+11.25)/22.5);
+
+    return cardinalDirections[index];
   },
 
   scheduleUpdate: function(delay) {

@@ -105,7 +105,14 @@ modules: [
       <td>If you have another module that emits the INDOOR_TEMPERATURE notification, the indoor temperature will be displayed.<br>
         <br><b>Default value:</b>  <code>false</code>
       </td>
-    </tr><tr>
+    </tr>
+    <tr>
+      <td><code>showWind</code></td>
+      <td>Toggles display of wind conditions<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>apiBase</code></td>
       <td>The Dark Sky API base URL.<br>
         <br><b>Default value:</b>  <code>'https://api.darksky.net/forecast'</code>
