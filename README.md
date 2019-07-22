@@ -124,6 +124,12 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>showSunsetSunrise</code></td>
+      <td>Toggles disploay of sunrise and sunset times<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>enablePrecipitationGraph</code></td>
       <td>Toggles display of the precipitation graph.<br>
         <br><b>Default value:</b>  <code>true</code>
