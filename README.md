@@ -131,6 +131,12 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>showSunsetSunrise</code></td>
+      <td>Toggles disploay of sunrise and sunset times<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>enablePrecipitationGraph</code></td>
       <td>Toggles display of the precipitation graph.<br>
         <br><b>Default value:</b>  <code>true</code>
@@ -155,10 +161,22 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>forecastTableFontSize</code></td>
+      <td>Sets CSS font style for forecast table. Possible values: <code>'xsmall'</code>, <code>'small'</code>, <code>'medium'</code>, <code>'large'</code>, <code>'xlarge'</code><br>
+        <br><b>Default value:</b>  <code>'medium'</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>precipitationProbabilityThreshold</code></td>
       <td>Probability threshold at which rain is rendered onto the precipitation graph.<br>
           See the <a href="https://darksky.net/dev/docs/response#data-point">Darksky.net API documentation</a> for more details.<br>
         <br><b>Default value:</b>  <code>0.1</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>showDailyPrecipitationChance</code></td>
+      <td>Toggles display of the precipitation probability for each day.<br>
+        <br><b>Default value:</b>  <code>true</code>
       </td>
     </tr>
     <tr>

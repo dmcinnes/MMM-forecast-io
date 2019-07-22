@@ -18,10 +18,13 @@ Module.register("MMM-forecast-io", {
     latitude:  null,
     longitude: null,
     showForecast: true,
+    forecastTableFontSize: 'medium',
     maxDaysForecast: 7,   // maximum number of days to show in forecast
     showWind: true,
+    showSunriseSunset: true,
     enablePrecipitationGraph: true,
     alwaysShowPrecipitationGraph: false,
+    showDailyPrecipitationChance: true,
     precipitationGraphWidth: 400,
     precipitationFillColor: 'white',
     precipitationProbabilityThreshold: 0.1,
@@ -63,6 +66,7 @@ Module.register("MMM-forecast-io", {
 
   getStyles: function () {
     return ["weather-icons.css", "weather-icons-wind.css", "MMM-forecast-io.css"];
+    return ["font-awesome.css", "weather-icons.css", "weather-icons-wind.css", "MMM-forecast-io.css"];
   },
 
   shouldLookupGeolocation: function () {
@@ -158,6 +162,7 @@ Module.register("MMM-forecast-io", {
     }
 
     var currentWeather = this.weatherData.currently;
+    var daily          = this.weatherData.daily;
     var hourly         = this.weatherData.hourly;
     var minutely       = this.weatherData.minutely;
 
@@ -205,6 +210,25 @@ Module.register("MMM-forecast-io", {
     windSpeed.innerHTML = " " + cardinalDirection + " " + Math.round(currentWeather.windSpeed) + "-" + Math.round(currentWeather.windGust) + windSpeedUnit;
     wind.appendChild(windSpeed);
 
+    var sunriseSunset = document.createElement("div");
+    sunriseSunset.className = "small dimmed sunrise-sunset";
+
+    var sunriseIcon = document.createElement("span");
+    sunriseIcon.className = "wi wi-sunrise";
+    sunriseSunset.appendChild(sunriseIcon);
+
+    var sunriseTime = document.createElement("span");
+    sunriseTime.innerHTML = moment(new Date(daily.data[0].sunriseTime * 1000)).format("LT") + "&nbsp;";
+    sunriseSunset.appendChild(sunriseTime);
+
+    var sunsetIcon = document.createElement("span");
+    sunsetIcon.className = "wi wi-sunset";
+    sunriseSunset.appendChild(sunsetIcon);
+
+    var sunsetTime = document.createElement("span");
+    sunsetTime.innerHTML = moment(new Date(daily.data[0].sunsetTime * 1000)).format("LT");
+    sunriseSunset.appendChild(sunsetTime);
+    
     var summaryText = minutely ? minutely.summary : hourly.summary;
     var summary = document.createElement("div");
     summary.className = "small dimmed summary";
@@ -212,6 +236,10 @@ Module.register("MMM-forecast-io", {
 
     wrapper.appendChild(large);
     wrapper.appendChild(summary);
+ 
+    if (this.config.showSunriseSunset) {
+      wrapper.appendChild(sunriseSunset);
+    }
 
     if (this.config.showWind) {
       wrapper.appendChild(wind);
@@ -335,6 +363,14 @@ Module.register("MMM-forecast-io", {
     var icon = document.createElement("span");
     icon.className = 'wi weathericon ' + iconClass;
 
+    var dayPrecipProb = document.createElement("span");
+    dayPrecipProb.className = "forecast-precip-prob";
+    if (data.precipProbability > 0) {
+      dayPrecipProb.innerHTML = Math.round(data.precipProbability * 100) + "%";
+    } else {
+      dayPrecipProb.innerHTML = "&nbsp;";
+    }
+
     var forecastBar = document.createElement("div");
     forecastBar.className = "forecast-bar";
 
@@ -368,6 +404,9 @@ Module.register("MMM-forecast-io", {
 
     row.appendChild(dayTextSpan);
     row.appendChild(icon);
+    if (this.config.showDailyPrecipitationChance) {
+      row.appendChild(dayPrecipProb);
+    }
     row.appendChild(forecastBarWrapper);
 
     return row;
@@ -391,7 +430,7 @@ Module.register("MMM-forecast-io", {
     max = Math.round(max);
 
     var display = document.createElement("table");
-    display.className = "forecast";
+    display.className = this.config.forecastTableFontSize + " forecast";
     for (i = 0; i < filteredDays.length; i++) {
       var day = filteredDays[i];
       var row = this.renderForecastRow(day, min, max);
