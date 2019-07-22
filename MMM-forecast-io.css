@@ -37,6 +37,12 @@
   padding-right: 0.5em;
 }
 
+.MMM-forecast-io .forecast-row .forecast-precip-prob {
+  font-size: 70%;
+  padding-right: 0.5em;
+  text-align: right;
+}
+
 .MMM-forecast-io .forecast-bar {
   display: table;
   overflow: hidden;
