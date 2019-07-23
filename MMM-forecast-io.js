@@ -65,7 +65,6 @@ Module.register("MMM-forecast-io", {
   },
 
   getStyles: function () {
-    return ["weather-icons.css", "weather-icons-wind.css", "MMM-forecast-io.css"];
     return ["font-awesome.css", "weather-icons.css", "weather-icons-wind.css", "MMM-forecast-io.css"];
   },
 
