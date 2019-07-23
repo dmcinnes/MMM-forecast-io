@@ -105,7 +105,14 @@ modules: [
       <td>If you have another module that emits the INDOOR_TEMPERATURE notification, the indoor temperature will be displayed.<br>
         <br><b>Default value:</b>  <code>false</code>
       </td>
-    </tr><tr>
+    </tr>
+    <tr>
+      <td><code>showWind</code></td>
+      <td>Toggles display of wind conditions<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>apiBase</code></td>
       <td>The Dark Sky API base URL.<br>
         <br><b>Default value:</b>  <code>'https://api.darksky.net/forecast'</code>
@@ -121,6 +128,12 @@ modules: [
       <td><code>maxDaysForecast</code></td>
       <td>Limit how many days of weather forecast. Useful values 1-7<br>
         <br><b>Default value:</b>  <code>7</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>showSunsetSunrise</code></td>
+      <td>Toggles disploay of sunrise and sunset times<br>
+        <br><b>Default value:</b>  <code>true</code>
       </td>
     </tr>
     <tr>
@@ -158,6 +171,12 @@ modules: [
       <td>Probability threshold at which rain is rendered onto the precipitation graph.<br>
           See the <a href="https://darksky.net/dev/docs/response#data-point">Darksky.net API documentation</a> for more details.<br>
         <br><b>Default value:</b>  <code>0.1</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>showDailyPrecipitationChance</code></td>
+      <td>Toggles display of the precipitation probability for each day.<br>
+        <br><b>Default value:</b>  <code>true</code>
       </td>
     </tr>
     <tr>
