@@ -80,6 +80,14 @@
   width: 300px;
 }
 
+.small.MMM-forecast-io .forecast-row {
+  font-size: 70%;
+}
+
+.small.MMM-forecast-io .forecast-bar .bar {
+  line-height: 0.6em;
+}
+
 .MMM-forecast-io .sunrise-sunset > span.wi {
   padding-right: 0.3em;
   padding-left: 0.3em;
