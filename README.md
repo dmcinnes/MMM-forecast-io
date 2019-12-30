@@ -132,7 +132,7 @@ modules: [
     </tr>
     <tr>
       <td><code>showSunriseSunset</code></td>
-      <td>Toggles disploay of sunrise and sunset times<br>
+      <td>Toggles display of sunrise and sunset times<br>
         <br><b>Default value:</b>  <code>true</code>
       </td>
     </tr>
