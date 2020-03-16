@@ -1,14 +1,6 @@
 .MMM-forecast-io {
 }
 
-.MMM-forecast-io .dark{
-  color: #777;
-}
-
-.MMM-forecast-io .darker{
-  color: #444;
-}
-
 .MMM-forecast-io .big-icon {
   font-size: 75%;
   line-height: 65px;
@@ -68,14 +60,6 @@
   border: 0.5ex transparent solid;
   background-clip: padding-box;
   color: black;
-}
-
-.MMM-forecast-io .dark .forecast-bar .bar {
-  background-color: #777;
-}
-
-.MMM-forecast-io .darker .forecast-bar .bar {
-  background-color: #555;
 }
 
 .MMM-forecast-io .precipitation-graph {

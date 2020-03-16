@@ -5,6 +5,7 @@ Module.register("MMM-forecast-io", {
     apiBase: "https://api.darksky.net/forecast",
     units: config.units,
     language: config.language,
+    showIndoorTemperature: false,
     updateInterval: 5 * 60 * 1000, // every 5 minutes
     animationSpeed: 1000,
     initialLoadDelay: 0, // 0 seconds delay
@@ -16,15 +17,11 @@ Module.register("MMM-forecast-io", {
     },
     latitude:  null,
     longitude: null,
-    showCurrentWeather: true,
-    showIndoorTemperature: false,
-    showTextSummary: true,
-    showWind: true,
-    showSunriseSunset: true,
     showForecast: true,
-    fadeForecast: true,
     forecastTableFontSize: 'medium',
     maxDaysForecast: 7,   // maximum number of days to show in forecast
+    showWind: true,
+    showSunriseSunset: true,
     enablePrecipitationGraph: true,
     alwaysShowPrecipitationGraph: false,
     showDailyPrecipitationChance: true,
@@ -171,18 +168,16 @@ Module.register("MMM-forecast-io", {
     var large = document.createElement("div");
     large.className = "large light";
 
-    if(this.config.showCurrentWeather) {
-      var icon = currentWeather ? currentWeather.icon : hourly.icon;
-      var iconClass = this.config.iconTable[icon];
-      var icon = document.createElement("span");
-      icon.className = 'big-icon wi ' + iconClass;
-      large.appendChild(icon);
+    var icon = currentWeather ? currentWeather.icon : hourly.icon;
+    var iconClass = this.config.iconTable[icon];
+    var icon = document.createElement("span");
+    icon.className = 'big-icon wi ' + iconClass;
+    large.appendChild(icon);
 
-      var temperature = document.createElement("span");
-      temperature.className = "bright";
-      temperature.innerHTML = " " + this.temp + "&deg;";
-      large.appendChild(temperature);
-    }
+    var temperature = document.createElement("span");
+    temperature.className = "bright";
+    temperature.innerHTML = " " + this.temp + "&deg;";
+    large.appendChild(temperature);
 
     if (this.roomTemperature !== undefined) {
       var icon = document.createElement("span");
@@ -233,16 +228,14 @@ Module.register("MMM-forecast-io", {
     sunsetTime.innerHTML = moment(new Date(daily.data[0].sunsetTime * 1000)).format("LT");
     sunriseSunset.appendChild(sunsetTime);
     
+    var summaryText = minutely ? minutely.summary : hourly.summary;
+    var summary = document.createElement("div");
+    summary.className = "small dimmed summary";
+    summary.innerHTML = summaryText;
+
     wrapper.appendChild(large);
-
-    if (this.config.showTextSummary) {
-      var summaryText = minutely ? minutely.summary : hourly.summary;
-      var summary = document.createElement("div");
-      summary.className = "small dimmed summary";
-      summary.innerHTML = summaryText;
-      wrapper.appendChild(summary);
-    }
-
+    wrapper.appendChild(summary);
+ 
     if (this.config.showSunriseSunset) {
       wrapper.appendChild(sunriseSunset);
     }
@@ -353,14 +346,14 @@ Module.register("MMM-forecast-io", {
     return moment.weekdaysShort(dt.getDay());
   },
 
-  renderForecastRow: function (data, min, max, addClass) {
+  renderForecastRow: function (data, min, max) {
     var total = max - min;
     var interval = 100 / total;
     var rowMinTemp = this.roundTemp(data.temperatureMin);
     var rowMaxTemp = this.roundTemp(data.temperatureMax);
 
     var row = document.createElement("tr");
-    row.className = "forecast-row" + (addClass ? " " + addClass : "");
+    row.className = "forecast-row";
 
     var dayTextSpan = document.createElement("span");
     dayTextSpan.className = "forecast-day"
@@ -439,16 +432,7 @@ Module.register("MMM-forecast-io", {
     display.className = this.config.forecastTableFontSize + " forecast";
     for (i = 0; i < filteredDays.length; i++) {
       var day = filteredDays[i];
-      var addClass = "";
-      if(this.config.fadeForecast) {
-        if(i+2 == filteredDays.length) {
-          addClass = "dark";
-        }
-        if(i+1 == filteredDays.length) {
-          addClass = "darker";
-        }
-	  }
-      var row = this.renderForecastRow(day, min, max, addClass);
+      var row = this.renderForecastRow(day, min, max);
       display.appendChild(row);
     }
     return display;
