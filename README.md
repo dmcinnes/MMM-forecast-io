@@ -101,6 +101,18 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>showTextSummary</code></td>
+      <td>Toggles display of text summary.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>showCurrentWeather</code></td>
+      <td>Toggles display of current weather.<br>
+        <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>showIndoorTemperature</code></td>
       <td>If you have another module that emits the INDOOR_TEMPERATURE notification, the indoor temperature will be displayed.<br>
         <br><b>Default value:</b>  <code>false</code>
@@ -122,6 +134,12 @@ modules: [
       <td><code>showForecast</code></td>
       <td>Toggles display of the seven-day weather forecast.<br>
         <br><b>Default value:</b>  <code>true</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>fadeForecast</code></td>
+      <td>Toggles fading of last 2 forecast rows.<br>
+        <br><b>Default value:</b>  <code>false</code>
       </td>
     </tr>
     <tr>
