@@ -128,7 +128,7 @@ Module.register("MMM-forecast-io", {
       console.log('process weather error', error);
     }
     // try later
-   this.scheduleUpdate();
+    this.scheduleUpdate();
   },
 
   notificationReceived: function(notification, payload, sender) {
@@ -173,7 +173,7 @@ Module.register("MMM-forecast-io", {
     var large = document.createElement("div");
     large.className = "large light";
 
-   if(this.config.showCurrentWeather) {
+    if(this.config.showCurrentWeather) {
       var icon = currentWeather ? currentWeather.icon : hourly.icon;
       var iconClass = this.config.iconTable[icon];
       var icon = document.createElement("span");
