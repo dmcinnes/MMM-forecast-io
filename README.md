@@ -137,6 +137,12 @@ modules: [
       </td>
     </tr>
     <tr>
+      <td><code>showFeelsLike</code></td>
+      <td>Toggles display of the local "feels like" temperature. Feels like is the ambient air temperature, adjusted for relative humidity and wind speed to determine how weather conditions feel to bare skin.<br>
+        <br><b>Default value:</b>  <code>false</code>
+      </td>
+    </tr>
+    <tr>
       <td><code>fadeForecast</code></td>
       <td>Toggles fading of last 2 forecast rows.<br>
         <br><b>Default value:</b>  <code>false</code>
