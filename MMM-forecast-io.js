@@ -23,6 +23,7 @@ Module.register("MMM-forecast-io", {
     showSunriseSunset: true,
     showForecast: true,
     fadeForecast: false,
+    showFeelsLike: false, // new FeelsLike option
     forecastTableFontSize: 'medium',
     maxDaysForecast: 7,   // maximum number of days to show in forecast
     enablePrecipitationGraph: true,
@@ -116,6 +117,7 @@ Module.register("MMM-forecast-io", {
     }
     this.loaded = true;
     this.weatherData = data;
+    this.feelsLike = this.roundTemp(this.weatherData.currently.apparentTemperature); // process feelsLike data
     this.temp = this.roundTemp(this.weatherData.currently.temperature);
     this.updateDom(this.config.animationSpeed);
     this.scheduleUpdate();
@@ -195,6 +197,15 @@ Module.register("MMM-forecast-io", {
       large.appendChild(temperature);
     }
 
+/* --- new FeelsLike row --- */
+    if (this.config.showFeelsLike || (this.temp - this.feelsLike > 1) || (this.feelsLike - this.temp > 1) ) {
+      var feelsLike = document.createElement("div");
+      feelsLike.className = "medium bright";
+      feelsLike.innerHTML = "Feels like  " + this.feelsLike + "&deg;";
+      large.appendChild(feelsLike);
+    }
+/* --- --- */
+
     var wind = document.createElement("div");
     wind.className = "small dimmed wind";
 
@@ -232,7 +243,7 @@ Module.register("MMM-forecast-io", {
     var sunsetTime = document.createElement("span");
     sunsetTime.innerHTML = moment(new Date(daily.data[0].sunsetTime * 1000)).format("LT");
     sunriseSunset.appendChild(sunsetTime);
-    
+
     wrapper.appendChild(large);
 
     if (this.config.showTextSummary) {
