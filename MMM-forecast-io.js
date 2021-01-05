@@ -198,7 +198,7 @@ Module.register("MMM-forecast-io", {
     }
 
 /* --- new FeelsLike row --- */
-    if (this.config.showFeelsLike || (this.temp - this.feelsLike > 1) || (this.feelsLike - this.temp > 1) ) {
+    if (this.config.showFeelsLike && ((this.temp - this.feelsLike > 1) || (this.feelsLike - this.temp > 1))) {
       var feelsLike = document.createElement("div");
       feelsLike.className = "medium bright";
       feelsLike.innerHTML = "Feels like  " + this.feelsLike + "&deg;";
