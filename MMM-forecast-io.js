@@ -264,8 +264,8 @@ Module.register("MMM-forecast-io", {
 
     if (this.config.alwaysShowPrecipitationGraph ||
         (this.config.enablePrecipitationGraph &&
-         this.isAnyPrecipitation(minutely))) {
-      wrapper.appendChild(this.renderPrecipitationGraph());
+         this.isAnyPrecipitation(minutely,hourly))) {
+      wrapper.appendChild(this.renderPrecipitationGraph(minutely?this.weatherData.minutely.data:this.weatherData.hourly.data));
     }
 
     if (this.config.showForecast) {
@@ -275,11 +275,11 @@ Module.register("MMM-forecast-io", {
     return wrapper;
   },
 
-  isAnyPrecipitation: function (minutely) {
-    if (!minutely) {
+  isAnyPrecipitation: function (minutely,hourly) {
+    if (!minutely&&!hourly) {
       return false;
     }
-    var data = this.weatherData.minutely.data;
+    var data = minutely?this.weatherData.minutely.data:this.weatherData.hourly.data;
     var threshold = this.config.precipitationProbabilityThreshold;
     for (i = 0; i < data.length; i++) {
       if (data[i].precipProbability > threshold) {
@@ -289,7 +289,7 @@ Module.register("MMM-forecast-io", {
     return false;
   },
 
-  renderPrecipitationGraph: function () {
+  renderPrecipitationGraph: function (data) {
     var i;
     var width = this.config.precipitationGraphWidth;
     var height = Math.round(width * 0.3);
@@ -322,7 +322,6 @@ Module.register("MMM-forecast-io", {
     }
     context.restore();
 
-    var data = this.weatherData.minutely.data;
     var stepSize = Math.round(width / data.length);
     context.save();
     context.strokeStyle = 'white';
